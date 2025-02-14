@@ -50,7 +50,11 @@ export const managerLogin = async (req, res, next) => {
         }
 
         const token = generateToken(managerExist._id);
-        res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
+        res.cookie("token", token, {
+            httpOnly: true,  // Prevents XSS attacks
+            secure: true, // Secure in production
+            sameSite: "None",
+        });
         const { password: _password, ...managerWithoutPassword } = managerExist.toObject();
         const roleMessage = managerExist.role.toLowerCase() === "admin" ? "Admin account logged in" : "Manager account logged in";
 
