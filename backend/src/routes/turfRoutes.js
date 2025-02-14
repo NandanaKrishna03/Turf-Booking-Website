@@ -1,5 +1,5 @@
 import e from "express";
-import { addTurf, deleteTurf, findTurfByCategory, findTurfById, getMyTurfs, getTurfDetails, getTurfs, updateTurf } from "../controllers/turfController.js";
+import { addTurf, deleteTurf, findTurfByCategory, findTurfById, getMyTurfs, getTurfDetails, getTurfs, getTurfsByManager, updateTurf } from "../controllers/turfController.js";
 import { managerAuth } from "../middlewares/managerAuth.js";
 import { upload } from "../middlewares/multer.js";
 import { turfAuth } from "../middlewares/turfAuth.js";
@@ -23,7 +23,7 @@ router.delete('/delete-turf/:id',managerAuth,deleteTurf)
 router.get('/find-turf-by-id/:id',managerAuth,findTurfById)
 
 router.get('/find-turf-by-category/:category',findTurfByCategory)
-
+router.get("/turfsofmanager/:managerId", managerAuth,getTurfsByManager);
 
 
 export {router as turfRouter}

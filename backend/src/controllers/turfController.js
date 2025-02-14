@@ -106,24 +106,25 @@ export const updateTurf = async (req, res, next) => {
       
         const formattedManager = mongoose.Types.ObjectId.isValid(manager) ? mongoose.Types.ObjectId(manager) : null;
 
-const updatedTurf = await Turf.findByIdAndUpdate(
-    turfId,
-    { title, category, description, price, image: imageUrl, manager: formattedManager },
-    { new: true, runValidators: true }
-);
-
-
-        if (!updatedTurf) {
-            return res.status(404).json({ message: "Turf not found" });
-        }
-
-        return res.json({ data: updatedTurf, message: "Turf details updated successfully" });
-
-        } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-        }
-        }; 
-
+        const updatedTurf = await Turf.findByIdAndUpdate(
+          turfId,
+          { title, category, description, price, image: imageUrl, manager: formattedManager },
+          { new: true, runValidators: true }
+      );
+      
+      if (!updatedTurf) {
+          return res.status(404).json({ message: "Turf not found" });
+      }
+      
+      await updatedTurf.save(); // ✅ Ensures the update is committed to the database
+      
+      console.log("Updated Turf:", updatedTurf);
+      return res.json({ data: updatedTurf, message: "Turf details updated successfully" });
+      
+    } catch (error) {
+      return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+  }
+};
 export const deleteTurf= async (req,res)=>{
         try {
             const turfId=req.params.id;
@@ -186,4 +187,32 @@ export const findTurfById=async (req,res)=>{
         }
     };
     
-      
+    export const getTurfsByManager = async (req, res, next) => {
+      try {
+          const { managerId } = req.user.id; // Extract manager ID from request parameters
+          console.log("Fetching turfs for manager:", managerId);
+  
+          // Fetch latest data from DB
+          const turfList = await Turf.find({ manager: managerId })
+              .populate("manager", "name") // Populate manager details
+              .sort({ updatedAt: -1 }) // Sort by latest updates
+              .lean(); // Convert Mongoose documents to plain objects
+  
+          if (!turfList || turfList.length === 0) {
+              return res.status(404).json({ message: "No turfs found for this manager" });
+          }
+  
+          console.log("Updated Turf List:", turfList); // Debugging logs
+  
+          res.status(200).json({
+              data: turfList,
+              message: "Turf details fetched successfully",
+          });
+      } catch (error) {
+          console.error("Error fetching turfs:", error);
+          return res.status(error.statusCode || 500).json({
+              message: error.message || "Internal server error",
+          });
+      }
+  };
+  

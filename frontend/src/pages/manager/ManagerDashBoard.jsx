@@ -27,11 +27,12 @@ import { useNavigate } from "react-router-dom";
           My Turfs
         </button>
        
-        <button onClick={() => navigate("/manager/profile-update")} className="btn btn-secondary">
+        <button onClick={() => navigate("/manager/profile-update")} className="btn btn-primary mr-4">
           Profile Update
         </button>
-       
-         
+        <button onClick={() => navigate("/manager/add-turf")} className="btn btn-primary mr-4">
+          Add turf
+        </button>
         
 
       </div>
