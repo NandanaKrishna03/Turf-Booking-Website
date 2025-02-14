@@ -30,15 +30,10 @@ import { useNavigate } from "react-router-dom";
         <button onClick={() => navigate("/manager/profile-update")} className="btn btn-secondary">
           Profile Update
         </button>
-        <button onClick={() => navigate("/manager/add-turf")} className="btn btn-secondary">
-          Add turf
-        </button>
-        <button onClick={() => navigate("/manager/update-turf")} className="btn btn-secondary">
-          update turf
-        </button>
-         <button onClick={() => navigate("/manager/")} className="btn btn-secondary">
-          delete turf
-        </button>
+       
+         
+        
+
       </div>
     </div>
   );

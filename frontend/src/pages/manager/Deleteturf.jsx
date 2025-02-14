@@ -1,34 +1,42 @@
-/* eslint-disable react/prop-types */
-import { useNavigate } from "react-router-dom";
+import  { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
+import {  useSelector } from "react-redux";
 
-export const DeleteTurf = ({ turfId }) => {
+
+export const DeleteTurf = () => {
+    const { id } = useParams(); // Get the turf ID from the URL
     const navigate = useNavigate();
-
-    const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this turf?")) {
+    const { manager } = useSelector((state) => state.manager); // Get manager info
+    useEffect(() => {
+        const deleteTurf = async () => {
             try {
-                const token = localStorage.getItem("token"); // Get token from local storage
-
-                if (!token) {
-                    alert("Unauthorized: Please log in again.");
-                    return;
+                const response = await axiosInstance.delete(`/delete-turf/turfDetails/${id}`);
+                if (response.status === 200) {
+                    alert("Turf deleted successfully!");
+                    navigate("/manager/turfs"); // Redirect to the turfs page after deletion
                 }
-
-                await axiosInstance.delete(`/turf/delete-turf/${turfId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`, // Attach token to request
-                    },
-                });
-
-                alert("Turf deleted successfully!");
-                navigate("/manager/turfs");
             } catch (error) {
                 console.error("Error deleting turf:", error);
-                alert(error.response?.data?.message || "Failed to delete turf");
+                if (error.response && error.response.status === 401) {
+                    // If unauthorized, clear the manager state and redirect to login
+                    
+                    navigate("/manager/login");
+                } else {
+                    alert("Failed to delete turf. Please try again.");
+                }
             }
-        }
-    };
+        };
 
-    return <button onClick={handleDelete} className="btn-danger">Delete Turf</button>;
+        if (id) {
+            deleteTurf();
+        }
+    }, [id]);
+    
+    return (
+        <div className="flex justify-center items-center min-h-screen">
+            <p>Deleting turf... Please wait.</p>
+        </div>
+    );
 };
+

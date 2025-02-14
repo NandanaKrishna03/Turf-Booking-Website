@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 export const Header = () => {
-    const navigate = useNavigate();
+    
 
     return (
         <div className="flex justify-between items-center px-14 h-20 shadow-2xl">
@@ -13,7 +13,8 @@ export const Header = () => {
                     <Link to={"/turfs"}><li>Turfs</li></Link>
                 </ul>
             </nav>
-            <button className="btn btn-primary" onClick={() => navigate('/user/signup')}>Join Us</button>
+            <Link to="/manager/signup" className="btn btn-primary">Join Us</Link>
+
         </div>
     );
 };

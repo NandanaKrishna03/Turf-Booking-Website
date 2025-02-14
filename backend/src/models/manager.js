@@ -28,7 +28,7 @@ const managerSchema = new Schema({
     },
    
        turf: [{ type: mongoose.Types.ObjectId, ref: "Turf" }],
-       user: { type: mongoose.Schema.Types.ObjectId, ref: "UserModel", required: true },
+       
    },
        { timestamps: true }
    

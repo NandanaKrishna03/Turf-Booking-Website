@@ -55,21 +55,36 @@ export const UpdateTurf = () => {
         }
     
         const data = new FormData();
-        Object.keys(formData).forEach((key) => {
-            data.append(key, formData[key]);
-        });
+        data.append("title", formData.title);
+        data.append("category", Array.isArray(formData.category) ? formData.category.join(",") : formData.category);
+        data.append("description", formData.description);
+        data.append("address", formData.address);
+        data.append("price", formData.price);
+        data.append("availableDates", JSON.stringify(formData.availableDates));
+        data.append("availableTimeSlots", JSON.stringify(formData.availableTimeSlots));
+        if (formData.image) data.append("image", formData.image);
     
         try {
-            await axiosInstance.put(`/turf/update-turf/${id}`, data, {
+          const response=  await axiosInstance.put(`/turf/update-turf/${id}`, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
+            console.log("Update Response:", response.data); 
             alert("Turf updated successfully!");
-            navigate("/manager/turfs"); // Redirect after update
+    
+            // Fetch updated turf list
+            const updatedResponse = await axiosInstance.get("/turf/get-turf");
+            console.log("Updated Turfs:", updatedResponse.data);
+            
+            // Store updated turfs in localStorage (or update Redux state)
+            localStorage.setItem("turfs", JSON.stringify(updatedResponse.data.data));
+    
+            navigate("/manager/turfs", { state: { refresh: true } }); // Ensure refresh trigger
+            // Redirect after update
         } catch (error) {
             console.error("Error updating turf:", error);
-            alert("Failed to update turf");
+            alert(error.response?.data?.message || "Failed to update turf");
         }
     };
     

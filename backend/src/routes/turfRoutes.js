@@ -8,19 +8,19 @@ const router=e.Router()
 
 
 
-router.get('/get-turf',getTurfs)
+router.get('/get-turf',managerAuth,getTurfs)
 
 router.get('/turfDetails/:id',getTurfDetails)
 
 router.post('/add-turf',managerAuth,upload.single("image"),addTurf)
 
-router.put('/update-turf/:id',turfAuth,upload.single("image"),updateTurf)
+router.put('/update-turf/:id',managerAuth,upload.single("image"),updateTurf)
 
-router.delete('/delete-turf/:id',turfAuth,deleteTurf)
+router.delete('/delete-turf/:id',managerAuth,deleteTurf)
 
 
 
-router.get('/find-turf-by-id/:id',findTurfById)
+router.get('/find-turf-by-id/:id',managerAuth,findTurfById)
 
 router.get('/find-turf-by-category/:category',findTurfByCategory)
 

@@ -1,6 +1,6 @@
 import { cloudinaryInstance } from "../config/cloudinary.js"
 import Turf from "../models/turf.js"
-
+import mongoose from "mongoose";
 export const getTurfs=async(req,res,next)=>{
     try {
         const turfList=await Turf.find()
@@ -104,11 +104,13 @@ export const updateTurf = async (req, res, next) => {
         }
 
       
-        const updatedTurf = await Turf.findByIdAndUpdate(
-        turfId,
-        { title, category, description, price, image: imageUrl, manager: Array.isArray(manager) ? manager : [manager] },
-        { new: true }
-        );
+        const formattedManager = mongoose.Types.ObjectId.isValid(manager) ? mongoose.Types.ObjectId(manager) : null;
+
+const updatedTurf = await Turf.findByIdAndUpdate(
+    turfId,
+    { title, category, description, price, image: imageUrl, manager: formattedManager },
+    { new: true, runValidators: true }
+);
 
 
         if (!updatedTurf) {
