@@ -17,13 +17,13 @@ connectDB();
 
 // CORS Configuration
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174","https://turf-booking-website-serve.vercel.app/"], // Allow both origins
+  origin: ["http://localhost:5173","https://turf-booking-website-gules.vercel.app"], // Allow both origins
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use((req, res, next) => {
-  const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+  const allowedOrigins = ["http://localhost:5173","https://turf-booking-website-gules.vercel.app"]
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
