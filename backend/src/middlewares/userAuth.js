@@ -1,18 +1,26 @@
 import jwt from "jsonwebtoken";
-export const userAuth=(req,res,next)=>{
+
+export const userAuth = (req, res, next) => {
     try {
-        const token=req.cookies.token;
+        // Check if token exists in cookies
+        const token = req.cookies?.token;
         if (!token) {
-            return res.status(401).json({message:"user not authorised",success:false})
-        }
-        const tokenVerified=jwt.verify(token, process.env.JWT_SECRET_KEY);
-        if (!tokenVerified) {
-            return res.status(401).json({message:"user not authorised",success:false})
+            return res.status(401).json({ message: "User not authorized. Token missing.", success: false });
         }
 
-        req.user=tokenVerified;
-        next();
+        // Verify token
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+            if (err) {
+                console.error("JWT Verification Error:", err.message); // Log for debugging
+                return res.status(401).json({ message: "Invalid or expired token.", success: false });
+            }
+
+            req.user = decoded; // Attach decoded user info to request
+            next();
+        });
+
     } catch (error) {
-        return res.status(401).json({message:error.message||"user autherization failed",success:false})
+        console.error("Authentication Middleware Error:", error.message); // Log error
+        return res.status(401).json({ message: "User authorization failed.", success: false });
     }
-}
+};

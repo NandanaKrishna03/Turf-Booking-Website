@@ -18,11 +18,15 @@ const MyTurf = () => {
             setIsLoading(false);
             return;
         }
+        console.log("Token in localStorage:", localStorage.getItem("token"));
 
         setIsLoading(true);
         try {
             const response = await axiosInstance.get("/turf/turfsofmanager", {
-                withCredentials: true, // Include cookies for authentication
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure token is present
+                },
+                withCredentials: true, // Ensure cookies are sent (needed if backend uses cookies)
             });
             console.log("Fetched Turfs:", response.data);
             setTurfs(response.data.data || []);
