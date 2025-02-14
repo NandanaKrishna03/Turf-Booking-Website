@@ -23,7 +23,7 @@ router.delete('/delete-turf/:id',managerAuth,deleteTurf)
 router.get('/find-turf-by-id/:id',managerAuth,findTurfById)
 
 router.get('/find-turf-by-category/:category',findTurfByCategory)
-router.get("/turfsofmanager/:managerId", managerAuth,getTurfsByManager);
+router.get("/turfsofmanager", managerAuth,getTurfsByManager);
 
 
 export {router as turfRouter}
