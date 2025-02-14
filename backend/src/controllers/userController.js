@@ -197,7 +197,7 @@ export const updateUserProfile = async (req, res) => {
     
             // Find all turf bookings related to the logged-in user
             const bookings = await BookingModel.find({ user: userId, turf: { $exists: true } })
-                .populate("turf");  // Populate turf field to get turf details
+                .populate("turf","name price");  // Populate turf field to get turf details
             
             if (bookings.length === 0) {
                 return res.status(404).json({ message: "No bookings found" });
