@@ -14,15 +14,17 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: allowedOrigins,
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  
+  credentials: true, // Allows cookies to be sent
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ Added PUT & DELETE explicitly
+  allowedHeaders: ["Content-Type", "Authorization"], //
 }));
 
 app.use(cookieParser());
 const port = process.env.PORT || 5007; // Use 5007 instead of 3000
 
 connectDB();
+app.options("*", cors());
+
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
