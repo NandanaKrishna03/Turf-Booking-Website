@@ -18,7 +18,7 @@ connectDB();
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://turf-booking-website-kappa.vercel.app"
+  
 ];
 
 app.use(cors({
