@@ -62,8 +62,8 @@ export const userSignup = async (req, res) => {
             // Store token in HTTP-only cookie
             res.cookie("token", token, {
                 httpOnly: true,  // Prevents XSS attacks
-                secure: process.env.NODE_ENV === "production",  // Secure in production
-                sameSite: "Strict",
+                secure: true, // Secure in production
+                sameSite: "None",
             });
     
             // Remove password from response object
