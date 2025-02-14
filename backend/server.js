@@ -5,7 +5,7 @@ import { connectDB } from './src/config/db.js';
 import { apiRouter } from './src/routes/index.js';
 
 const app = express();
-const port = process.env.PORT || 5007; // Use 5001 instead of 3000
+const port = process.env.PORT || 5007; // Use 5007 instead of 3000
 
 // Middleware
 app.use(express.json());
@@ -16,29 +16,36 @@ app.use(express.urlencoded({ extended: true }));
 connectDB();
 
 // CORS Configuration
-app.use(cors({
-  origin: ["http://localhost:5173","https://turf-booking-website-kappa.vercel.app"], // Allow both origins
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-app.use((req, res, next) => {
-  const allowedOrigins = ["http://localhost:5173", "https://turf-booking-website-kappa.vercel.app"];
-  const origin = req.headers.origin;
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://turf-booking-website-kappa.vercel.app"
+];
 
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-access-token"]
+}));
+
+// Custom Middleware for CORS Headers
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin); // Dynamically set the origin
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
 
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, x-access-token");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   }
 
   next();
 });
+
 // Routes
 app.use("/api", apiRouter);
 
