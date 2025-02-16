@@ -9,7 +9,7 @@ export const managerSignup = async (req, res, next) => {
     try {
         console.log("hitted");
         const { name, email, role, password, phoneNumber, profilepic } = req.body;
-        if (!name || !email || !role || !password || !phoneNumber) {
+        if (!name || !email || !password ) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
