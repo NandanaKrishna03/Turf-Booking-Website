@@ -5,7 +5,7 @@ import { generateToken } from "../utils/token.js";
 import { cloudinaryInstance } from "../config/cloudinary.js"; 
 import { BookingModel } from "../models/booking.js";
 
-const NODE_ENV=process.env.NODE_ENV
+
 
 export const userSignup = async (req, res) => {
     try {
@@ -60,10 +60,10 @@ export const userSignup = async (req, res) => {
             const token = generateToken(UserExist._id);
     
             // Store token in HTTP-only cookie
-            res.clearCookie("token", {
-                sameSite: NODE_ENV === "production" ? "None" : "Lax",
-                secure: NODE_ENV === "production",
-                httpOnly: NODE_ENV === "production",
+            res.cookie("token", token, {
+                httpOnly: true,  // Prevents XSS attacks
+                secure: true, // Secure in production
+                sameSite: "None",
             });
     
             // Remove password from response object
@@ -232,12 +232,7 @@ export const updateUserProfile = async (req, res) => {
         
  export const userLogout =async(req,res,next)=>{
       try {
-        res.clearCookie("token", {
-            sameSite: NODE_ENV === "production" ? "None" : "Lax",
-            secure: NODE_ENV === "production",
-            httpOnly: NODE_ENV === "production",
-        });
-
+         res.clearCookie("token")
          return res.json({message:"User logout successfully"})
             
        } catch (error) {
