@@ -10,7 +10,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://turf-booking-website-frontend.onrender.com",
+  "https://turf-booking-website-frontend.vercel.app",
 ];
 
 app.use(cors({
