@@ -5,7 +5,7 @@ import { generateToken } from "../utils/token.js";
 import { cloudinaryInstance } from "../config/cloudinary.js"; 
 import { BookingModel } from "../models/booking.js";
 
-
+const NODE_ENV = process.env.NODE_ENV;
 
 export const userSignup = async (req, res) => {
     try {
@@ -230,13 +230,17 @@ export const updateUserProfile = async (req, res) => {
         }
     };
         
- export const userLogout =async(req,res,next)=>{
-      try {
-         res.clearCookie("token")
-         return res.json({message:"User logout successfully"})
-            
-       } catch (error) {
-         return res.status(error.statusCode ||500).json({message:error.message||"Internal server error"})
-       }
-       }     
-       
+    export const userLogout = async (req, res, next) => {
+        try {
+            res.clearCookie("token", {
+                sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+                secure: process.env.NODE_ENV === "production",
+                httpOnly: true, // Always true for security
+            });
+    
+            return res.json({ message: "User logged out successfully" });
+        } catch (error) {
+            return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+        }
+    };
+    
