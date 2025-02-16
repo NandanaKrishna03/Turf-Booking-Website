@@ -26,37 +26,58 @@ export const Profile = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-gray-100 p-6">
+        <div className="min-h-screen flex bg-white dark:bg-black p-6">
             {/* Sidebar - Buttons */}
-            <div className="w-1/4 bg-white p-6 shadow-lg rounded-lg flex flex-col gap-4">
-                <button className="btn btn-primary w-full text-left bg-blue-500 hover:bg-blue-600 text-white" onClick={handleEditProfile}>
+            <div className="w-1/4 bg-white dark:bg-gray-900 p-6 shadow-lg rounded-lg flex flex-col gap-4">
+                <button
+                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
+                    onClick={handleEditProfile}
+                >
                     Edit Profile
                 </button>
-                <button className="btn btn-primary w-full text-left bg-blue-500 hover:bg-blue-600 text-white" onClick={handleChangePassword}>
+                <button
+                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
+                    onClick={handleChangePassword}
+                >
                     Change Password
                 </button>
-                <button className="btn btn-primary w-full text-left bg-blue-500 hover:bg-blue-600 text-white" onClick={handleDeactivate}>
+                <button
+                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
+                    onClick={handleDeactivate}
+                >
                     Deactivate Account
                 </button>
-                <button className="btn btn-primary w-full text-left bg-blue-500 hover:bg-blue-600 text-white" onClick={handleBooking}>
+                <button
+                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
+                    onClick={handleBooking}
+                >
                     My Bookings
                 </button>
-                <button className="btn btn-primary w-full text-left bg-blue-500 hover:bg-blue-600 text-white" onClick={handleUserTurf}>
+                <button
+                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
+                    onClick={handleUserTurf}
+                >
                     My Turfs
                 </button>
             </div>
 
             {/* Profile Section */}
             <div className="w-3/4 flex flex-col items-center justify-center">
-                <h1 className="text-4xl font-bold mb-6">Hi, {profileData?.name || "User"} 👋</h1>
-                <section className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+                <h1 className="text-4xl font-bold mb-6 text-black dark:text-white">
+                    Hi, {profileData?.name || "User"} 👋
+                </h1>
+                <section className="bg-white dark:bg-gray-900 p-8 rounded-md shadow-lg w-full max-w-md text-center border-2 border-blue-800">
                     <img 
                         src={profileData?.profilepic} 
-                        className="w-40 h-40 rounded-full shadow-lg mx-auto" 
+                        className="w-40 h-40 rounded-full shadow-lg mx-auto border-4 border-blue-800" 
                         alt="Profile" 
                     />
-                    <h2 className="text-lg mt-4 font-semibold">{profileData?.email}</h2>
-                    <h2 className="text-lg">{profileData?.phoneNumber}</h2>
+                    <h2 className="text-lg mt-4 font-semibold text-black dark:text-white">
+                        {profileData?.email}
+                    </h2>
+                    <h2 className="text-lg text-black dark:text-white">
+                        {profileData?.phoneNumber}
+                    </h2>
                 </section>
             </div>
         </div>

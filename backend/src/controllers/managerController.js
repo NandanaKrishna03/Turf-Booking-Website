@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 import { cloudinaryInstance } from "../config/cloudinary.js";
 import Turf  from "../models/turf.js";
+const isProduction = process.env.NODE_ENV === "production";
 export const managerSignup = async (req, res, next) => {
     try {
         console.log("hitted");
@@ -22,7 +23,13 @@ export const managerSignup = async (req, res, next) => {
         await managerData.save();
 
         const token = generateToken(managerData._id);
-        res.cookie("token", token);
+        
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: isProduction, 
+            sameSite: isProduction ? "None" : "Lax",
+        });
+
         const roleMessage = role.toLowerCase() === "admin" ? "Admin account created" : "Manager account created";
 
         return res.json({ data: managerData, message: roleMessage });
@@ -50,19 +57,28 @@ export const managerLogin = async (req, res, next) => {
         }
 
         const token = generateToken(managerExist._id);
+
         res.cookie("token", token, {
-            httpOnly: true,  // Prevents XSS attacks
-            secure: true, // Secure in production
-            sameSite: "None",
+            httpOnly: true,
+            secure: isProduction, 
+            sameSite: isProduction ? "None" : "Lax",
         });
+
         const { password: _password, ...managerWithoutPassword } = managerExist.toObject();
         const roleMessage = managerExist.role.toLowerCase() === "admin" ? "Admin account logged in" : "Manager account logged in";
 
-        return res.json({ data: managerWithoutPassword, message: roleMessage });
+        return res.status(200).json({
+            message: "User Login Successfully",
+            token, // Send token in response
+            data: roleMessage, 
+            manager: managerWithoutPassword
+        });
+
     } catch (error) {
         next(error);
     }
 };
+
 
 export const getAllManagers = async (req, res, next) => {
     try {
@@ -121,36 +137,58 @@ export const deleteManager = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
     try {
-        res.clearCookie("token");
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "None" : "Lax",
+        });
+
         return res.json({ message: "Manager logged out successfully" });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
-
 export const getAllTurfBookingDetails = async (req, res, next) => {
     try {
-        const managerId = req.user.id; // Get logged-in manager's ID
+        const managerId = req.user.id;
+        console.log("Fetching bookings for manager:", managerId);
 
-        // Step 1: Find all turfs added by this manager
-        const turfs = await Turf.find({ managerId }).select("_id");
-
+        // Fetch all turfs managed by the manager
+        const turfs = await Turf.find({ manager: managerId }).lean();
         if (!turfs.length) {
-            return res.json({ data: [], message: "No turfs found for this manager" });
+            return res.status(404).json({ message: "No turfs found for this manager" });
         }
 
-        // Step 2: Get all bookings related to these turfs
+        // Extract turf IDs
         const turfIds = turfs.map(turf => turf._id);
-        const bookings = await BookingModel.find({ turfId: { $in: turfIds } })
-            .populate("userId", "name email")
-            .populate("turfId", "name ");
+        console.log("Turf IDs managed by manager:", turfIds);
 
-        return res.json({ data: bookings, message: "All turf bookings fetched successfully" });
+        // Fetch all bookings for the manager's turfs
+        const bookings = await BookingModel.find({ turf: { $in: turfIds } })
+            .populate("user", "name email")
+            .populate({
+                path: "turf",
+                select: "title address price manager",
+                populate: {
+                    path: "manager",
+                    select: "name email"
+                }
+            })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        if (!bookings.length) {
+            return res.status(404).json({ message: "No bookings found for these turfs" });
+        }
+
+        console.log("Bookings found:", bookings);
+
+        res.status(200).json({
+            data: bookings,
+            message: "Booking details fetched successfully"
+        });
     } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+        console.error("Error fetching booking details:", error);
+        return res.status(500).json({ message: error.message || "Internal server error" });
     }
 };
-
-
-
-

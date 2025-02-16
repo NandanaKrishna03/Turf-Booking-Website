@@ -26,8 +26,8 @@ router.options("*", (req, res) => {
 router.get('/get-turf', managerAuth, getTurfs);
 router.get('/turfDetails/:id', getTurfDetails);
 router.post('/add-turf', managerAuth, upload.single("image"), addTurf);
-router.put('/update-turf/:id', managerAuth, upload.single("image"), updateTurf);
-router.delete('/delete-turf/:id', managerAuth, deleteTurf);
+router.post('/update-turf/:id', managerAuth, upload.single("image"), updateTurf);
+router.post('/delete-turf/:id', managerAuth, deleteTurf);
 router.get('/find-turf-by-id/:id', managerAuth, findTurfById);
 router.get('/find-turf-by-category/:category', findTurfByCategory);
 router.get("/turfsofmanager", managerAuth, getTurfsByManager);

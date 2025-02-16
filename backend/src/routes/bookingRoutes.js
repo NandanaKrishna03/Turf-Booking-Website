@@ -2,8 +2,9 @@ import express from "express";
 import { 
   createBooking, 
   getUserBookings, 
-  getManagerBookings, 
-  cancelBooking 
+  
+  cancelBooking, 
+  updateBookingStatus
 } from "../controllers/bookingController.js";
 import { managerAuth } from "../middlewares/managerAuth.js";
 import { userAuth } from "../middlewares/userAuth.js";
@@ -18,10 +19,10 @@ router.post("/create", userAuth, createBooking);
 router.get("/user", userAuth, getUserBookings);
 
 // 🏆 Route to get all bookings for a manager (turf owner)
-router.get("/manager", managerAuth, getManagerBookings);
+
 
 // 🏆 Route to cancel a booking
 router.delete("/cancel/:bookingId", userAuth, cancelBooking);
-
+router.put("/update-status/:bookingId", updateBookingStatus);
 
 export {router as bookingRouter}

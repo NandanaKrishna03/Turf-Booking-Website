@@ -26,6 +26,8 @@ import { CreateBooking } from "../pages/user/CreateBooking";
 import { AddTurf } from "../pages/manager/AddTurf";
 import { UpdateTurf } from "../pages/manager/UpdateTurf";
 import { DeleteTurf } from "../pages/manager/Deleteturf";
+import { ManagerBooking } from "../pages/manager/ManagerBookings";
+
 
 
 
@@ -155,6 +157,10 @@ export const router = createBrowserRouter([
         {
           path: "delete-turf/:id",  // Accepts turf ID as a parameter
           element: <DeleteTurf />,
+        },
+        {
+          path: "bookings",  // Accepts turf ID as a parameter
+          element: <ManagerBooking/>,
         },
         
         ],

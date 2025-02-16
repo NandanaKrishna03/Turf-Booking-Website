@@ -7,11 +7,13 @@ import {  useSelector } from "react-redux";
 export const DeleteTurf = () => {
     const { id } = useParams(); // Get the turf ID from the URL
     const navigate = useNavigate();
-    const { manager } = useSelector((state) => state.manager); // Get manager info
+    const { manager } = useSelector((state) => state.manager);
+    console.log(manager);
+     // Get manager info
     useEffect(() => {
         const deleteTurf = async () => {
             try {
-                const response = await axiosInstance.delete(`/delete-turf/turfDetails/${id}`);
+                const response = await axiosInstance.post(`/delete-turf/turfDetails/${id}`);
                 if (response.status === 200) {
                     alert("Turf deleted successfully!");
                     navigate("/manager/turfs"); // Redirect to the turfs page after deletion
