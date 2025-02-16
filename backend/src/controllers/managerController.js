@@ -8,31 +8,44 @@ const isProduction = process.env.NODE_ENV === "production";
 export const managerSignup = async (req, res, next) => {
     try {
         console.log("hitted");
-        const { name, email, role, password, phoneNumber, profilepic } = req.body;
-        if (!name || !email || !password ) {
-            return res.status(400).json({ message: "All fields are required" });
+        const { name, email, password, phoneNumber, profilepic } = req.body;
+
+        // Validation: Ensure required fields exist
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: "Name, email, and password are required" });
         }
 
+        // Check if manager already exists
         const isManagerExist = await ManagerModel.findOne({ email });
         if (isManagerExist) {
             return res.status(400).json({ message: "Manager already exists" });
         }
 
+        // Hash the password
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const managerData = new ManagerModel({ name, email, role, password: hashedPassword, phoneNumber, profilepic });
+        
+        // Create manager data (without role)
+        const managerData = new ManagerModel({ 
+            name, 
+            email, 
+            password: hashedPassword, 
+            phoneNumber, 
+            profilepic 
+        });
+
         await managerData.save();
 
+        // Generate token
         const token = generateToken(managerData._id);
-        
+
+        // Set cookie
         res.cookie("token", token, {
             httpOnly: true,
             secure: isProduction, 
             sameSite: isProduction ? "None" : "Lax",
         });
 
-        const roleMessage = role.toLowerCase() === "admin" ? "Admin account created" : "Manager account created";
-
-        return res.json({ data: managerData, message: roleMessage });
+        return res.json({ data: managerData, message: "Manager account created successfully" });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
