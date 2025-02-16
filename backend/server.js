@@ -13,34 +13,33 @@ const allowedOrigins = [
   "https://turf-booking-website-frontend.vercel.app",
 ];
 
+// ✅ Use cors middleware (no need for manual headers)
 app.use(cors({
   origin: allowedOrigins,
-  credentials: true, // Allows cookies to be sent
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // ✅ Ensuring PUT & DELETE are allowed
+  credentials: true, 
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// ✅ Handle preflight requests properly
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigins.includes(req.headers.origin) ? req.headers.origin : "");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.sendStatus(200);
-});
+const port = process.env.PORT || 5007;
 
-const port = process.env.PORT || 5007; // Use 5007 instead of 3000
+// ✅ Connect to Database
+connectDB()
+  .then(() => console.log("✅ Database connected successfully"))
+  .catch((err) => {
+    console.error("❌ Database connection failed:", err);
+    process.exit(1); // Stop the server if DB fails
+  });
 
-// Connect to Database
-connectDB();
-
+// ✅ Test API Endpoint
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello from Backend!");
 });
 
-// Routes
+// ✅ Routes
 app.use("/api", apiRouter);
 
-// Start Server
+// ✅ Start Server
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
