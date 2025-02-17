@@ -26,21 +26,31 @@ export const registerAdmin = async (req, res) => {
 export const loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const admin = await Admin.findOne({ email });
+        const admin = await AdminModel.findOne({ email });
+        
         if (!admin) {
             return res.status(404).json({ message: "Admin not found" });
         }
+
         const isPasswordValid = await bcrypt.compare(password, admin.password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-        res.status(200).json({ message: "Login successful", data: { admin, token } });
+
+        // Generate token with admin role
+        const token = generateToken(admin._id, admin.role);
+        res.status(200).json({
+            message: "Login successful",
+            data: {
+                admin,
+                token,
+                role: admin.role, // Return the 'role' of the admin
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
-
 
 
 export const getAllUsers = async (req, res) => {

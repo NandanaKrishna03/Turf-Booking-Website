@@ -27,8 +27,14 @@ import { AddTurf } from "../pages/manager/AddTurf";
 import { UpdateTurf } from "../pages/manager/UpdateTurf";
 import { DeleteTurf } from "../pages/manager/Deleteturf";
 import { ManagerBooking } from "../pages/manager/ManagerBookings";
-
-
+import AdminLogin from "../pages/admin/AdminLogin";
+import AdminLayout from "../layout/AdminLayout";
+import AdminDashboard from "../pages/admin/Dashboard";
+import { ProtectedRouteAdmin } from "./ProtectedRouteAdmin";
+import ManageUsers from "../pages/admin/viewallusers";
+import ManageManagers from "../pages/admin/viewallManager";
+import ViewAllTurfs from "../pages/admin/viewAllTurf";
+import ViewAllBookings from "../pages/admin/viewAllBookings";
 
 
 
@@ -67,9 +73,8 @@ export const router = createBrowserRouter([
         path: "turfDetails/:turfId",
         element: <TurfDetails />,
       },
-      
       {
-        element:<ProtectedRoute/>,
+        element: <ProtectedRoute />,
         path: "user",
         children: [
           {
@@ -78,32 +83,31 @@ export const router = createBrowserRouter([
           },
           {
             path: "profile",
-            element: <Profile/>,
+            element: <Profile />,
           },
           {
             path: "profile-update",
-            element: <EditProfile/>,
+            element: <EditProfile />,
           },
           {
             path: "change-password",
-            element: <ChangePassword/>,
+            element: <ChangePassword />,
           },
           {
             path: "account-deactivate",
-            element: <DeactivateAccount/>,
+            element: <DeactivateAccount />,
           },
           {
             path: "get-bookings",
-            element: <MyBookings/>,
+            element: <MyBookings />,
           },
           {
             path: "create-booking/:turfId",
-             element: <CreateBooking/>,
+            element: <CreateBooking />,
           },
-          
           {
             path: "payment/success",
-            // element: <h2>Payment success</h2>,
+            element: <h2>Payment Success</h2>, // Added element for success payment
           },
         ],
       },
@@ -123,46 +127,83 @@ export const router = createBrowserRouter([
         element: <Login role="manager" />,
       },
       {
-        path:"notification",
-        //element:
-      },{
-        element:<ProtectedRouteManager/>,
+        path: "notification",
+        element: <h2>Manager Notifications</h2>, // Added placeholder element for notifications
+      },
+      {
+        element: <ProtectedRouteManager />,
         path: "",
         children: [
-          
           {
             path: "dashboard",
-            element: <ManagerDashboard /> ,
+            element: <ManagerDashboard />,
           },
           {
             path: "profile-update",
-            element: <EditManagerProfile/>,
+            element: <EditManagerProfile />,
           },
           {
             path: "turf-bookings/:turfId",
-             element:<TurfBookings />,
+            element: <TurfBookings />,
           },
           {
             path: "add-turf",
-             element:<AddTurf />,
+            element: <AddTurf />,
           },
           {
             path: "turfs",
-            element: <MyTurfs />,  // ✅ Now MyTurfs is accessible
-        },
-        {
-          path: "update-turf/:id",  // Accepts turf ID as a parameter
-          element: <UpdateTurf />,
-        },
-        {
-          path: "delete-turf/:id",  // Accepts turf ID as a parameter
-          element: <DeleteTurf />,
-        },
-        {
-          path: "bookings",  // Accepts turf ID as a parameter
-          element: <ManagerBooking/>,
-        },
-        
+            element: <MyTurfs />,
+          },
+          {
+            path: "update-turf/:id",
+            element: <UpdateTurf />,
+          },
+          {
+            path: "delete-turf/:id",
+            element: <DeleteTurf />,
+          },
+          {
+            path: "bookings",
+            element: <ManagerBooking />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "admin",
+    element: <AdminLayout />,
+    errorElement: <ErrorPage role={'admin'} />,
+    children: [
+      {
+        path: "login",
+        element: <AdminLogin role="admin" />,
+      },
+     
+      {
+        element: <ProtectedRouteAdmin />,
+        path: "",
+        children: [
+          {
+            path: "dashboard",
+            element: <AdminDashboard />,
+          },
+          {
+            path: "users",
+            element: <ManageUsers />,
+          },
+          {
+            path: "getAllManagers",
+            element: <ManageManagers />,
+          },
+          {
+            path: "viewturfs",
+            element: <ViewAllTurfs />,
+          },
+          {
+            path: "getallbooking",
+            element: <ViewAllBookings />,
+          },
         ],
       },
     ],

@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearUser, saveUser } from "../../redux/features/userSlice";
 import { clearManager, saveManager } from "../../redux/features/managerSlice";
-import { clearAdmin, saveAdmin } from "../../redux/features/adminSlice";
 import toast from "react-hot-toast";
 
 export const Login = ({ role }) => {
@@ -30,13 +29,7 @@ export const Login = ({ role }) => {
             saveAction: saveManager,
             clearAction: clearManager,
         },
-        admin: {
-            loginAPI: "/admin/login",
-            profileRoute: "/admin/dashboard",
-            signupRoute: "/admin/signup",
-            saveAction: saveAdmin,
-            clearAction: clearAdmin,
-        },
+       
     };
 
     const config = userConfig[role] || userConfig.user;
