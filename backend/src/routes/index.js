@@ -18,3 +18,7 @@ router.use('/cart',cartRouter)
 router.use('/review',reviewRouter)
 router.use('/bookings',bookingRouter)
 export{router as apiRouter}
+
+
+
+

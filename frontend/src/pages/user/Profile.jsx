@@ -1,9 +1,12 @@
 import { useFetch } from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";  // Adjust the path accordingly
 
 export const Profile = () => {
     const [profileData] = useFetch("/user/profile");
     const navigate = useNavigate();
+    const { theme } = useContext(ThemeContext); // Consume theme context
 
     const handleEditProfile = () => {
         navigate("/user/profile-update");
@@ -26,59 +29,79 @@ export const Profile = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-white dark:bg-black p-6">
-            {/* Sidebar - Buttons */}
-            <div className="w-1/4 bg-white dark:bg-gray-900 p-6 shadow-lg rounded-lg flex flex-col gap-4">
-                <button
-                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
-                    onClick={handleEditProfile}
-                >
-                    Edit Profile
-                </button>
-                <button
-                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
-                    onClick={handleChangePassword}
-                >
-                    Change Password
-                </button>
-                <button
-                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
-                    onClick={handleDeactivate}
-                >
-                    Deactivate Account
-                </button>
-                <button
-                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
-                    onClick={handleBooking}
-                >
-                    My Bookings
-                </button>
-                <button
-                    className="btn w-full text-left bg-blue-800 hover:bg-blue-900 text-white rounded-md transition-all duration-300"
-                    onClick={handleUserTurf}
-                >
-                    My Turfs
-                </button>
-            </div>
-
-            {/* Profile Section */}
-            <div className="w-3/4 flex flex-col items-center justify-center">
-                <h1 className="text-4xl font-bold mb-6 text-black dark:text-white">
+        <div
+            className={`min-h-screen flex justify-center p-6 ${theme === "light" ? "bg-gray-50" : "bg-gray-800"}`} // Conditional background color
+        >
+            {/* Profile Section - Centered with a modern design */}
+            <div
+                className={`w-full max-w-4xl flex flex-col items-center justify-center p-6 rounded-xl shadow-lg ${
+                    theme === "light" ? "bg-white text-gray-800" : "bg-gray-900 text-white"
+                }`} // Profile card background and text color
+            >
+                <h1 className="text-3xl font-bold mb-6">
                     Hi, {profileData?.name || "User"} 👋
                 </h1>
-                <section className="bg-white dark:bg-gray-900 p-8 rounded-md shadow-lg w-full max-w-md text-center border-2 border-blue-800">
-                    <img 
-                        src={profileData?.profilepic} 
-                        className="w-40 h-40 rounded-full shadow-lg mx-auto border-4 border-blue-800" 
-                        alt="Profile" 
+
+                {/* Profile Picture Section */}
+                <section
+                    className={`w-full max-w-md flex flex-col items-center p-8 rounded-xl shadow-xl text-center border-2 ${
+                        theme === "light" ? "border-[#4A90E2] bg-white" : "border-gray-700 bg-gray-900"
+                    }`} // Profile card styling with a darker light blue border
+                >
+                    <img
+                        src={profileData?.profilepic}
+                        className={`w-40 h-40 rounded-full shadow-lg mb-4 ${
+                            theme === "light" ? "border-4 border-[#4A90E2]" : "border-4 border-gray-700"
+                        }`}
+                        alt="Profile"
                     />
-                    <h2 className="text-lg mt-4 font-semibold text-black dark:text-white">
-                        {profileData?.email}
-                    </h2>
-                    <h2 className="text-lg text-black dark:text-white">
-                        {profileData?.phoneNumber}
-                    </h2>
+                    <h2 className="text-xl font-semibold">{profileData?.email}</h2>
+                    <h3 className="text-lg">{profileData?.phoneNumber}</h3>
                 </section>
+
+                {/* Action Buttons */}
+                <div className="mt-8 w-full max-w-md flex flex-col gap-4">
+                    <button
+                        className={`btn w-full text-left ${
+                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
+                        } text-white rounded-md transition-all duration-300`}
+                        onClick={handleEditProfile}
+                    >
+                        Edit Profile
+                    </button>
+                    <button
+                        className={`btn w-full text-left ${
+                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
+                        } text-white rounded-md transition-all duration-300`}
+                        onClick={handleChangePassword}
+                    >
+                        Change Password
+                    </button>
+                    <button
+                        className={`btn w-full text-left ${
+                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
+                        } text-white rounded-md transition-all duration-300`}
+                        onClick={handleDeactivate}
+                    >
+                        Deactivate Account
+                    </button>
+                    <button
+                        className={`btn w-full text-left ${
+                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
+                        } text-white rounded-md transition-all duration-300`}
+                        onClick={handleBooking}
+                    >
+                        My Bookings
+                    </button>
+                    <button
+                        className={`btn w-full text-left ${
+                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
+                        } text-white rounded-md transition-all duration-300`}
+                        onClick={handleUserTurf}
+                    >
+                        My Turfs
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -7,7 +7,7 @@ export const Header = () => {
     return (
         <div className="flex justify-between items-center px-14 h-20   shadow-2xl">
             <div>
-                <h1 className="text-3xl font-bold">Logo</h1>
+                <h1 className="text-3xl font-bold">TurfNation</h1>
             </div>
             <div className="flex justify-center items-center gap-16">
                 <nav>

@@ -35,6 +35,7 @@ import ManageUsers from "../pages/admin/viewallusers";
 import ManageManagers from "../pages/admin/viewallManager";
 import ViewAllTurfs from "../pages/admin/viewAllTurf";
 import ViewAllBookings from "../pages/admin/viewAllBookings";
+import { ManagerProfile } from "../pages/manager/Profile";
 
 
 
@@ -137,6 +138,10 @@ export const router = createBrowserRouter([
           {
             path: "dashboard",
             element: <ManagerDashboard />,
+          },
+          {
+            path: "profile",
+            element: <ManagerProfile />,
           },
           {
             path: "profile-update",
