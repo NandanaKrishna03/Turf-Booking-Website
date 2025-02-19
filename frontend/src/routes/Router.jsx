@@ -12,7 +12,6 @@ import ManagerLayout from "../layout/ManagerLayout";
 import { Profile } from "../pages/user/Profile";
 import { ProtectedRoute} from "./ProtectedRoutes";
 import { ProtectedRouteManager } from "./ProtectedRouteManager";
-
 import { EditProfile } from "../pages/user/EditProfile";
 import { ChangePassword } from "../pages/user/changePassword";
 import { DeactivateAccount } from "../pages/user/deactivate";
@@ -21,7 +20,6 @@ import { EditManagerProfile } from "../pages/manager/profileUpdate";
 import { ManagerDashboard } from "../pages/manager/ManagerDashBoard";
 import { TurfBookings } from "../pages/manager/TurfBookings";
 import  MyTurfs  from "../pages/manager/MyTurf";
-
 import { CreateBooking } from "../pages/user/CreateBooking";
 import { AddTurf } from "../pages/manager/AddTurf";
 import { UpdateTurf } from "../pages/manager/UpdateTurf";
@@ -36,8 +34,6 @@ import ManageManagers from "../pages/admin/viewallManager";
 import ViewAllTurfs from "../pages/admin/viewAllTurf";
 import ViewAllBookings from "../pages/admin/viewAllBookings";
 import { ManagerProfile } from "../pages/manager/Profile";
-
-
 
 
 export const router = createBrowserRouter([

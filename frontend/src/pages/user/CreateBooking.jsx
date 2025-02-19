@@ -38,7 +38,7 @@ export const CreateBooking = () => {
             await axiosInstance.post("/bookings/create", { turfId, date, timeSlot, price });
 
             toast.success("Booking successful!");
-            navigate("/my-bookings"); // Redirect after booking
+            navigate("/user/get-bookings"); // Redirect after booking
         } catch (error) {
             toast.error(error.response?.data?.message || "Booking failed.");
         }

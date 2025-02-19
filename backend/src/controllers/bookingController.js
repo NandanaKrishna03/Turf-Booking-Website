@@ -1,5 +1,7 @@
 import { BookingModel } from "../models/booking.js";
+import { ManagerModel } from "../models/manager.js";
 import  Turf from "../models/turf.js";
+
 
 export const createBooking = async (req, res) => {
   try {
@@ -12,25 +14,51 @@ export const createBooking = async (req, res) => {
 
     console.log("Incoming request body:", req.body); // Debugging
 
-    // ✅ Check if Turf exists
+    // ✅ Fetch Turf and Its Manager
     const turf = await Turf.findById(turfId).populate("manager");
+
     if (!turf) {
-      console.log("Turf not found for ID:", turfId); // Debugging
+      console.log("Turf not found for ID:", turfId);
       return res.status(404).json({ message: "Turf not found" });
     }
 
+    if (!turf.manager) {
+      console.log("Turf exists but no manager assigned:", turfId);
+      return res.status(400).json({ message: "Turf must have an assigned manager" });
+    }
+
+    const managerId = turf.manager._id;
+    console.log("Retrieved Manager ID:", managerId);
+
+    // ✅ Validate manager exists in ManagerModel
+    const managerExists = await ManagerModel.findById(managerId);
+    if (!managerExists) {
+      console.log("Manager ID is invalid or missing:", managerId);
+      return res.status(500).json({ message: "Internal error: Manager not found" });
+    }
+
     // ✅ Create new booking
-    const newBooking = new BookingModel
-    ({ turf: turfId, user: userId, date, timeSlot, price,status:"Pending"});
+    const newBooking = new BookingModel({
+      turf: turfId,
+      user: userId,
+      manager: managerId, // ✅ Correctly assigned manager
+      date,
+      timeSlot,
+      price,
+      status: "Pending",
+    });
+
     await newBooking.save();
 
-    console.log("Booking created successfully:", newBooking); // Debugging
+    console.log("Booking created successfully:", newBooking);
     return res.status(201).json({ message: "Booking successful", booking: newBooking });
   } catch (error) {
     console.error("Error in createBooking:", error); // Debugging
     return res.status(500).json({ message: error.message || "Internal server error" });
   }
 };
+
+
 // 🏆 Fetch all bookings for a user
 export const getUserBookings = async (req, res) => {
   try {

@@ -23,7 +23,7 @@ router.options("*", (req, res) => {
 });
 
 // Turf Routes
-router.get('/get-turf', managerAuth, getTurfs);
+router.get('/get-turf', getTurfs);
 router.get('/turfDetails/:id', getTurfDetails);
 router.post('/add-turf', managerAuth, upload.single("image"), addTurf);
 router.post('/update-turf/:id', managerAuth, upload.single("image"), updateTurf);
