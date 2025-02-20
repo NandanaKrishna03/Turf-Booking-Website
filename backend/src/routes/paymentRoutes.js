@@ -7,7 +7,7 @@ import { Order } from "../models/oderModel.js";
 dotenv.config();
 const router = express.Router();
 
-const stripe = new Stripe(process.env.Stripe_Private_Api_Key);
+const stripe = new Stripe(process.env.STRIPE_PRIVATE_API_KEY);
 const client_domain = process.env.CLIENT_DOMAIN;
 
 // ✅ Create Stripe Checkout Session for Turf Booking
@@ -65,13 +65,19 @@ router.post("/create-checkout-session", userAuth, async (req, res) => {
 router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
     const sig = req.headers["stripe-signature"];
 
+    let event;
     try {
-        const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (error) {
+        console.error("⚠️ Webhook Signature Verification Failed:", error.message);
+        return res.status(400).json({ error: "Webhook Signature Verification Failed" });
+    }
 
-        if (event.type === "checkout.session.completed") {
-            const session = event.data.object;
+    // ✅ Handle Payment Success Event
+    if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
 
-            // ✅ Find the order by sessionId and update status to "Paid"
+        try {
             const updatedOrder = await Order.findOneAndUpdate(
                 { sessionId: session.id },
                 { status: "Paid" },
@@ -83,13 +89,15 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
             } else {
                 console.error(`⚠️ Order not found for session: ${session.id}`);
             }
+        } catch (dbError) {
+            console.error("❌ Database Update Error:", dbError);
         }
-
-        res.status(200).json({ received: true });
-    } catch (error) {
-        console.error("⚠️ Webhook Error:", error.message);
-        res.status(400).json({ error: "Webhook Error" });
     }
+
+    res.status(200).json({ received: true });
 });
+
+// ✅ Ensure Webhook Route Uses `express.raw()` Middleware Separately
+router.use(express.json());
 
 export { router as paymentRouter };
