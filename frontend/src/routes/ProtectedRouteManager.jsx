@@ -1,19 +1,26 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
+import { saveManager } from "../redux/features/managerSlice";
+ // Import action
 
 export const ProtectedRouteManager = () => {
-    const navigate = useNavigate(); // ✅ Always called at the top
-    const managerState = useSelector((state) => state.manager);
-    const isManagerAuth = managerState?.isManagerAuth || false; // ✅ Avoid destructuring undefined
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { isManagerAuth } = useSelector((state) => state.manager);
 
     useEffect(() => {
-        if (!isManagerAuth) {
-            navigate("/manager/login");
-        }
-    }, [isManagerAuth, navigate]); // ✅ Always runs, no conditions on hook placement
+        const token = localStorage.getItem("managerToken");
+        const managerData = JSON.parse(localStorage.getItem("managerData"));
 
-    if (!isManagerAuth) return null;
+        if (token && managerData && !isManagerAuth) {
+            dispatch(saveManager(managerData)); // Restore authentication from localStorage
+        } else if (!token) {
+            navigate("/manager/login", { replace: true });
+        }
+    }, [isManagerAuth, navigate, dispatch]);
+
+    if (!isManagerAuth) return null; // Prevents flickering before redirect
 
     return <Outlet />;
 };

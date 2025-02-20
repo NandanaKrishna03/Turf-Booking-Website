@@ -34,6 +34,7 @@ import ManageManagers from "../pages/admin/viewallManager";
 import ViewAllTurfs from "../pages/admin/viewAllTurf";
 import ViewAllBookings from "../pages/admin/viewAllBookings";
 import { ManagerProfile } from "../pages/manager/Profile";
+import PaymentStatus from "../pages/user/payementStatus";
 
 
 export const router = createBrowserRouter([
@@ -104,7 +105,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "payment/success",
-            element: <h2>Payment Success</h2>, // Added element for success payment
+            element: <PaymentStatus/>, // Added element for success payment
           },
         ],
       },

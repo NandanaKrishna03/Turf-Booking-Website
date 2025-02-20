@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-
 import { useForm } from "react-hook-form";
 import { axiosInstance } from "../../config/axiosInstance";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,13 +13,15 @@ export const Login = ({ role }) => {
     const dispatch = useDispatch();
 
     // Role-based configurations
-    const userConfig = {
+    const roleConfig = {
         user: {
             loginAPI: "/user/login",
             profileRoute: "/user/profile",
             signupRoute: "/signup",
             saveAction: saveUser,
             clearAction: clearUser,
+            tokenKey: "userToken",
+            dataKey: "userData",
         },
         manager: {
             loginAPI: "/manager/login",
@@ -28,25 +29,24 @@ export const Login = ({ role }) => {
             signupRoute: "/manager/signup",
             saveAction: saveManager,
             clearAction: clearManager,
+            tokenKey: "managerToken",
+            dataKey: "managerData",
         },
-       
     };
 
-    const config = userConfig[role] || userConfig.user;
+    const config = roleConfig[role] || roleConfig.user;
 
     const onSubmit = async (data) => {
         try {
             const response = await axiosInstance.post(config.loginAPI, data, { withCredentials: true });
-            console.log("Login response:", response);
 
-            // Extract token from response and store it
             const token = response?.data?.token;
             if (token) {
-                localStorage.setItem("token", token);
+                localStorage.setItem(config.tokenKey, token);
+                localStorage.setItem(config.dataKey, JSON.stringify(response?.data?.data));
                 axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
             }
 
-            // Save user details in Redux store
             dispatch(config.saveAction(response?.data?.data));
 
             toast.success("Login successful");
@@ -55,7 +55,6 @@ export const Login = ({ role }) => {
             console.error("Login Error:", error);
             dispatch(config.clearAction());
 
-            // Show a more detailed error message
             const errorMessage = error.response?.data?.message || "Login Failed. Please try again.";
             toast.error(errorMessage);
         }
@@ -64,16 +63,13 @@ export const Login = ({ role }) => {
     return (
         <div className="hero bg-base-200 min-h-screen text-base-content">
             <div className="hero-content flex-col lg:flex-row-reverse">
-                {/* Text Section */}
                 <div className="text-center lg:text-left">
                     <h1 className="text-5xl font-bold">Login now! {role}</h1>
                     <p className="py-6">Welcome back! Please log in to continue.</p>
                 </div>
 
-                {/* Form Section */}
                 <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                     <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
-                        {/* Email Input */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Email</span>
@@ -87,7 +83,6 @@ export const Login = ({ role }) => {
                             />
                         </div>
 
-                        {/* Password Input */}
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Password</span>
@@ -113,7 +108,6 @@ export const Login = ({ role }) => {
                             </div>
                         </div>
 
-                        {/* Submit Button */}
                         <div className="form-control mt-6">
                             <button className="btn btn-primary">Login</button>
                         </div>

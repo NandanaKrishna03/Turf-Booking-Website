@@ -2,11 +2,15 @@
 import { useState, useEffect, useContext } from "react";
 import { axiosInstance } from "../../config/axiosInstance";
 import toast from "react-hot-toast";
-import { ThemeContext } from "../../context/ThemeContext"; // Import Theme Context
+import { ThemeContext } from "../../context/ThemeContext";
+import { loadStripe } from "@stripe/stripe-js";
 
 export const MyBookings = ({ onBookingChange }) => {
   const [bookings, setBookings] = useState([]);
-  const { theme } = useContext(ThemeContext); // Access theme from context
+  const { theme } = useContext(ThemeContext);
+
+  // ✅ Load Stripe outside to avoid re-initialization
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_Publishable_key);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -39,12 +43,54 @@ export const MyBookings = ({ onBookingChange }) => {
     }
   };
 
+  // ✅ Handle Payment for Booking
+  const handleMakePayment = async (booking) => {
+    try {
+      console.log("Booking Data:", booking);
+  
+      if (booking.status === "Cancelled") {
+        toast.error("You cannot make a payment for a cancelled booking.");
+        return;
+      }
+  
+      const stripe = await stripePromise;
+  
+      const response = await axiosInstance.post(
+        "/payments/create-checkout-session",
+        {
+          bookingId: booking._id,
+          turfId: booking.turf?._id || "", // Ensure no undefined errors
+          date: booking.date,
+          timeSlot: booking.timeSlot,
+          price: booking.turf?.price || 0, // Default to 0 if missing
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure user is authenticated
+          },
+        }
+      );
+  
+      if (response.data.sessionId) {
+        const stripeRedirect = await stripe.redirectToCheckout({ sessionId: response.data.sessionId });
+        if (stripeRedirect.error) {
+          toast.error("Stripe Checkout failed. Try again.");
+          console.error("Stripe Error:", stripeRedirect.error);
+        }
+      } else {
+        toast.error("Failed to initiate payment. Try again.");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error("Error initiating payment.");
+    }
+  };
+  
+
   return (
     <div className={`min-h-screen py-10 px-4 md:px-6 transition-all duration-300 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center mb-6">
-          My Bookings
-        </h2>
+        <h2 className="text-3xl font-semibold text-center mb-6">My Bookings</h2>
 
         {bookings.length > 0 ? (
           <div className="space-y-4">
@@ -74,7 +120,24 @@ export const MyBookings = ({ onBookingChange }) => {
                   </p>
                 </div>
 
-                {/* Right Section - Cancel Button */}
+               {/* ✅ Payment Status or Payment Button */}
+{booking.status === "Paid" ? (
+  <p className="text-green-600 font-medium">✅ Payment Successful</p>
+) : (
+  booking.status !== "Cancelled" && (
+    <button
+      onClick={() => handleMakePayment(booking)}
+      className={`px-5 py-2 rounded-lg font-medium transition duration-300 ${
+        theme === "dark" ? "bg-green-600 hover:bg-green-700" : "bg-green-500 hover:bg-green-600"
+      } text-white focus:ring focus:ring-green-300`}
+    >
+      Make Payment
+    </button>
+  )
+)}
+
+
+                {/* Cancel Booking Button */}
                 {booking.status !== "Cancelled" && (
                   <button
                     onClick={() => handleCancelBooking(booking._id)}
