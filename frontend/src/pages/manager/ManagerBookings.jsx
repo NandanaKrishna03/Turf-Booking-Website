@@ -9,7 +9,7 @@ export const ManagerBooking = ({ refetch }) => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axiosInstance.get("manager/getBookings");
+        const response = await axiosInstance.get("manager/getBookings",{ withCredentials: true });
         console.log("API Response:", response.data);
         setBookings(response.data.data); // Adjust based on your API response structure
       } catch (error) {
