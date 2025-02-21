@@ -1,108 +1,73 @@
 import { useFetch } from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { ThemeContext } from "../../context/ThemeContext";  // Adjust the path accordingly
+import { useContext, useState } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
+import { MyBookings } from "./MyBooking";
 
 export const Profile = () => {
     const [profileData] = useFetch("/user/profile");
     const navigate = useNavigate();
-    const { theme } = useContext(ThemeContext); // Consume theme context
+    const { theme } = useContext(ThemeContext);
 
-    const handleEditProfile = () => {
-        navigate("/user/profile-update");
-    };
-
-    const handleChangePassword = () => {
-        navigate("/user/change-password");
-    };
-
-    const handleDeactivate = () => {
-        navigate("/user/account-deactivate");
-    };
-
-    const handleBooking = () => {
-        navigate("/user/get-bookings");
-    };
-
-    const handleUserTurf = () => {
-        navigate("/turfs");
-    };
+    // State to handle active tab
+    const [activeTab, setActiveTab] = useState("all");
 
     return (
-        <div
-            className={`min-h-screen flex justify-center p-6 ${theme === "light" ? "bg-gray-50" : "bg-gray-800"}`} // Conditional background color
-        >
-            {/* Profile Section - Centered with a modern design */}
-            <div
-                className={`w-full max-w-4xl flex flex-col items-center justify-center p-6 rounded-xl shadow-lg ${
-                    theme === "light" ? "bg-white text-gray-800" : "bg-gray-900 text-white"
-                }`} // Profile card background and text color
-            >
-                <h1 className="text-3xl font-bold mb-6">
-                    Hi, {profileData?.name || "User"} 👋
-                </h1>
+        <div className={`min-h-screen flex ${theme === "light" ? "bg-gray-100" : "bg-gray-900 text-white"}`}>
+            {/* Sidebar */}
+            <aside className={`w-1/4 min-h-screen p-6 flex flex-col items-center shadow-lg ${theme === "light" ? "bg-white text-gray-800" : "bg-gray-800 text-white"}`}>
+                {/* Profile Picture & Info */}
+                <img
+                    src={profileData?.profilepic || "/default-avatar.png"}
+                    className="w-24 h-24 rounded-full shadow-lg border-2 border-gray-300"
+                    alt="Profile"
+                />
+                
+                <h2 className="mt-4 text-lg font-semibold">{profileData?.name || "Your Name"}</h2>
+                <h2 className="mt-4 text-lg font-semibold">{profileData?.phoneNumber || "Your Phone"}</h2>
 
-                {/* Profile Picture Section */}
-                <section
-                    className={`w-full max-w-md flex flex-col items-center p-8 rounded-xl shadow-xl text-center border-2 ${
-                        theme === "light" ? "border-[#4A90E2] bg-white" : "border-gray-700 bg-gray-900"
-                    }`} // Profile card styling with a darker light blue border
-                >
-                    <img
-                        src={profileData?.profilepic}
-                        className={`w-40 h-40 rounded-full shadow-lg mb-4 ${
-                            theme === "light" ? "border-4 border-[#4A90E2]" : "border-4 border-gray-700"
-                        }`}
-                        alt="Profile"
-                    />
-                    <h2 className="text-xl font-semibold">{profileData?.email}</h2>
-                    <h3 className="text-lg">{profileData?.phoneNumber}</h3>
-                </section>
+                {/* Navigation Links */}
+                <nav className="mt-6 w-full">
+                    <button onClick={() => navigate("/user/get-bookings")} className="w-full flex items-center px-4 py-2 bg-green-500 text-white rounded-md">
+                        📋 All Bookings
+                    </button>
+                    <button onClick={() => navigate("/user/profile-update")} className="w-full flex items-center px-4 py-2 mt-2 hover:bg-gray-200 rounded-md">
+                        ✏️ Edit Profile
+                    </button>
+                    <button onClick={() => navigate("/user/change-password")} className="w-full flex items-center px-4 py-2 mt-2 hover:bg-gray-200 rounded-md">
+                        🔒 Change Password
+                    </button>
+                    <button onClick={() => navigate("/user/account-deactivate")} className="w-full flex items-center px-4 py-2 mt-2 hover:bg-gray-200 rounded-md">
+                        ❌ Deactivate Account
+                    </button>
+                    <button onClick={() => navigate("/turfs")} className="w-full flex items-center px-4 py-2 mt-2 hover:bg-gray-200 rounded-md">
+                        🏟️ My Turfs
+                    </button>
+                </nav>
+            </aside>
 
-                {/* Action Buttons */}
-                <div className="mt-8 w-full max-w-md flex flex-col gap-4">
-                    <button
-                        className={`btn w-full text-left ${
-                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
-                        } text-white rounded-md transition-all duration-300`}
-                        onClick={handleEditProfile}
-                    >
-                        Edit Profile
-                    </button>
-                    <button
-                        className={`btn w-full text-left ${
-                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
-                        } text-white rounded-md transition-all duration-300`}
-                        onClick={handleChangePassword}
-                    >
-                        Change Password
-                    </button>
-                    <button
-                        className={`btn w-full text-left ${
-                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
-                        } text-white rounded-md transition-all duration-300`}
-                        onClick={handleDeactivate}
-                    >
-                        Deactivate Account
-                    </button>
-                    <button
-                        className={`btn w-full text-left ${
-                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
-                        } text-white rounded-md transition-all duration-300`}
-                        onClick={handleBooking}
-                    >
-                        My Bookings
-                    </button>
-                    <button
-                        className={`btn w-full text-left ${
-                            theme === "light" ? "bg-[#4A90E2] hover:bg-[#357ABD]" : "bg-gray-700 hover:bg-gray-600"
-                        } text-white rounded-md transition-all duration-300`}
-                        onClick={handleUserTurf}
-                    >
-                        My Turfs
-                    </button>
+            {/* Main Content */}
+            <main className="w-3/4 p-6">
+                <div className={`p-6 rounded-lg shadow-md ${theme === "light" ? "bg-white" : "bg-gray-800"}`}>
+                    
+                    {/* Tabs */}
+                    <div className="flex border-b pb-2">
+                        <button
+                            className={`px-4 py-2 ${activeTab === "all" ? "bg-green-500 text-white rounded-t-md" : "text-gray-500 hover:text-gray-800"}`}
+                            onClick={() => setActiveTab("all")}
+                        >
+                            All Bookings
+                        </button>
+                        
+                    </div>
+
+                    {/* Content Based on Active Tab */}
+                    <div className="mt-4">
+                        {activeTab === "all" && <MyBookings />}
+                        {activeTab === "cancelled" && <MyBookings showCancelledOnly />}
+                    </div>
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

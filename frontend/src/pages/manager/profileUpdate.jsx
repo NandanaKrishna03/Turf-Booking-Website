@@ -62,12 +62,14 @@ export const EditManagerProfile = () => {
       if (file) {
         formData.append("profilepic", file);
       }
-
-      const response = await axiosInstance.put("/manager/profile-update", formData, {
+  
+      // Update profile
+      const response=await axiosInstance.post("/manager/profile-update", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       dispatch(saveManager(response.data.data)); // ✅ Update Redux store
+  
       toast.success("Profile updated successfully");
       navigate("/manager/dashboard");
     } catch (error) {

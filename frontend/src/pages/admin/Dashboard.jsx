@@ -1,48 +1,19 @@
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-import { useFetch } from "../../hooks/useFetch";
+import { Link } from "react-router-dom";
 
-const AdminDashboard = () => {
-    const navigate = useNavigate(); // Initialize useNavigate hook
-    const [users, usersLoading, usersError] = useFetch("/admin/user");
-    const [turfs, turfsLoading, turfsError] = useFetch("/admin/turfs");
-    const [bookings, bookingsLoading, bookingsError] = useFetch("/admin/bookings");
-    const [managers, managersLoading, managersError] = useFetch("/admin/getAllManagers");
+function Dashboard() {
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold text-center mb-6">Admin Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Link to="/admin/users" className="bg-blue-500 text-white p-4 rounded-lg shadow-lg text-center hover:bg-blue-600">Manage Users</Link>
+        <Link to="/admin/managers" className="bg-green-500 text-white p-4 rounded-lg shadow-lg text-center hover:bg-green-600">Manage Managers</Link>
+        <Link to="/admin/turfs" className="bg-yellow-500 text-white p-4 rounded-lg shadow-lg text-center hover:bg-yellow-600">Manage Turfs</Link>
+        <Link to="/admin/bookings" className="bg-red-500 text-white p-4 rounded-lg shadow-lg text-center hover:bg-red-600">Manage Bookings</Link>
+        
+      </div>
+    </div>
+  );
+}
 
-    // Check if any data is still loading
-    if (usersLoading || turfsLoading || bookingsLoading || managersLoading) {
-        return <div>Loading...</div>; // You could replace this with a spinner or animation for better UX
-    }
+export default Dashboard;
 
-    // If any of the fetches failed, display an error message
-    if (usersError || turfsError || bookingsError || managersError) {
-        return <div>Error loading data. Please try again later.</div>;
-    }
-
-    return (
-        <div>
-            <h1>Admin Dashboard</h1>
-            <div>
-                <h2>Users: {users?.length}</h2>
-                <h2>Turfs: {turfs?.length}</h2>
-                <h2>Bookings: {bookings?.length}</h2>
-                <h2>Managers: {managers?.length}</h2>
-            </div>
-
-            <div>
-                {/* Button to navigate to Manage Users page */}
-                <button onClick={() => navigate('/admin/users')}>View All Users</button><br />
-
-                {/* Button to navigate to Manage Managers page */}
-                <button onClick={() => navigate('/admin/getAllManagers')}>View All Managers</button><br />
-
-                {/* Button to navigate to Manage Turfs page */}
-                <button onClick={() => navigate('/admin/viewturfs')}>View All Turfs</button><br />
-
-                {/* Button to navigate to Manage Bookings page */}
-                <button onClick={() => navigate('/admin/getallbooking')}>View All Bookings</button>
-            </div>
-        </div>
-    );
-};
-
-export default AdminDashboard;

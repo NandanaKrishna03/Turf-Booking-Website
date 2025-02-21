@@ -56,60 +56,32 @@ export const EditProfile = () => {
   };
 
   return (
-    <div className="hero bg-base-200 min-h-screen">
-      <div className="hero-content flex-col lg:flex-row-reverse">
-        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-          <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col items-center">
-              <img src={preview} alt="Profile Preview" className="w-32 h-32 rounded-full object-cover mb-3" />
-              <input
-                type="file"
-                accept="image/*"
-                className="file-input file-input-bordered w-full max-w-xs"
-                onChange={handleFileChange}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Name</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Name"
-                {...register("name")}
-                className="input input-bordered"
-                required
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
-              <input
-                type="email"
-                placeholder="Email"
-                {...register("email")}
-                className="input input-bordered"
-                required
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Phone Number</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Phone Number"
-                {...register("phoneNumber")}
-                className="input input-bordered"
-                required
-              />
-            </div>
-            <div className="form-control mt-6">
-              <button className="btn btn-primary">Update Profile</button>
-            </div>
-          </form>
-        </div>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-center mb-6">Edit Profile</h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col items-center mb-4">
+            <img src={preview} alt="Profile" className="w-24 h-24 rounded-full object-cover mb-2" />
+            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="file-upload" />
+            <label htmlFor="file-upload" className="text-blue-600 cursor-pointer">Change Profile Picture</label>
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Name</label>
+            <input type="text" {...register("name")} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Email</label>
+            <input type="email" {...register("email")} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Phone Number</label>
+            <input type="text" {...register("phoneNumber")} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required />
+          </div>
+          <div className="flex justify-between">
+            <button type="button" className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Reset</button>
+            <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Save</button>
+          </div>
+        </form>
       </div>
     </div>
   );

@@ -2,12 +2,34 @@ import { useParams, useNavigate } from "react-router-dom";
 import TurfSkelton from "../../components/shared/Skelton";
 import { useFetch } from "../../hooks/useFetch";
 
+import { useEffect, useState } from "react";
+
+import TurfReviews from "./TurfReview";
+import { axiosInstance } from "../../config/axiosInstance";
+
 function TurfDetails() {
   const { turfId } = useParams();
   const navigate = useNavigate();
+  const [userId, setUserId] = useState(null);
 
   // Fetch turf details
   const [turfDetails, isLoading, error] = useFetch(`/turf/turfDetails/${turfId}`);
+
+  // Fetch the logged-in user's ID
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axiosInstance.get("/user/profile", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        setUserId(response.data.user._id);
+      } catch (error) {
+        console.error("Error fetching user ID:", error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
 
   if (isLoading) return <TurfSkelton />;
   if (error) return <p className="text-red-500 text-center mt-10 text-lg">Error fetching data!</p>;
@@ -59,6 +81,12 @@ function TurfDetails() {
             Book Now
           </button>
         </div>
+      </section>
+
+      {/* Turf Reviews Section */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Reviews</h2>
+        <TurfReviews turfId={turfId} userId={userId} />
       </section>
     </div>
   );

@@ -1,59 +1,79 @@
-// ViewAllTurfs.jsx
+import Darkmode from "../../components/shared/Darkmode";
 import { axiosInstance } from "../../config/axiosInstance";
 import { useFetch } from "../../hooks/useFetch";
+
 
 const ViewAllTurfs = () => {
     const [turfs, isLoading, error, refetch] = useFetch("/admin/turfs");
 
     const handleDeleteTurf = async (turfId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this turf?");
+        if (!confirmDelete) return;
+
         try {
             console.log("Deleting Turf with ID:", turfId);
-            const response = await axiosInstance.delete(`/turf/delete-turf/${turfId}`);
-            console.log("Delete Response:", response);
+            await axiosInstance.delete(`/turf/delete-turf/${turfId}`);
             refetch(); // Refresh the list after deletion
         } catch (error) {
             console.error("Error deleting turf:", error);
+            alert("Failed to delete turf. Please try again.");
         }
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div className="text-center text-gray-600 dark:text-gray-300 text-lg">Loading turfs...</div>;
     }
 
     if (error) {
-        return <div>Error loading turf.</div>;
+        return <div className="text-center text-red-500 dark:text-red-400 text-lg">Error: {error}</div>;
     }
 
-  return (
-    <div>
-      <h1>All Turfs</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            
-            <th>Price</th>
-            
-          </tr>
-        </thead>
-        <tbody>
-          {turfs?.map((turf) => (
-            <tr key={turf._id}>
-              <td>{turf.title}</td>
-              
-              <td>{turf.price}</td>
-              
-              <td>
-                                <button onClick={() => handleDeleteTurf(turf._id)}>
-                                    Delete
-                                </button>
-                            </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    return (
+        <div className="max-w-5xl mx-auto mt-10 p-6 bg-white dark:bg-gray-900 shadow-lg rounded-lg transition-all duration-300">
+            <Darkmode />
+            <h1 className="text-2xl font-semibold text-center mb-6 text-gray-900 dark:text-gray-100">All Turfs</h1>
+
+            {turfs?.length === 0 ? (
+                <p className="text-center text-gray-500 dark:text-gray-400">No turfs available.</p>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <thead>
+                            <tr className="bg-gray-100 dark:bg-gray-800">
+                                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-gray-100">Image</th>
+                                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-gray-100">Name</th>
+                                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-gray-100">Price</th>
+                                <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-gray-100">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {turfs.map((turf) => (
+                                <tr key={turf._id} className="text-center hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
+                                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                                        <img 
+                                            src={turf.image} 
+                                            alt={turf.title} 
+                                            className="w-20 h-20 object-cover rounded-md mx-auto shadow-md"
+                                        />
+                                    </td>
+                                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-gray-100">{turf.title}</td>
+                                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-900 dark:text-gray-100">₹{turf.price}</td>
+                                    <td className="border border-gray-300 dark:border-gray-600 px-4 py-2">
+                                        <button
+                                            onClick={() => handleDeleteTurf(turf._id)}
+                                            className="bg-red-500 dark:bg-red-600 text-white px-4 py-1 rounded-md hover:bg-red-600 dark:hover:bg-red-700 transition-all duration-200"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default ViewAllTurfs;

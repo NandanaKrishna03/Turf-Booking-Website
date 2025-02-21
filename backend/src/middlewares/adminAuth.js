@@ -12,7 +12,7 @@ export const adminAuth=(req,res,next)=>{
         if (!tokenVerified) {
             return res.status(401).json({message:"admin not authorised",success:false})
         }
-        if(tokenVerified.role!='manager'&&tokenVerified.role!='admin')
+        
         req.user=tokenVerified;
         next();
     } catch (error) {

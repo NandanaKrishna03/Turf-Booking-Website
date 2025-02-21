@@ -1,12 +1,9 @@
 import express from "express";
 import { userAuth } from "../middlewares/userAuth.js";
 import Stripe from "stripe";
-import dotenv from "dotenv";
-import { Order } from "../models/oderModel.js";
+import { Order } from "../models/orderModel.js";
 
-dotenv.config();
 const router = express.Router();
-
 const stripe = new Stripe(process.env.STRIPE_PRIVATE_API_KEY);
 const client_domain = process.env.CLIENT_DOMAIN;
 
@@ -38,7 +35,7 @@ router.post("/create-checkout-session", userAuth, async (req, res) => {
                 }
             ],
             mode: "payment",
-            success_url: `${client_domain}/user/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+            success_url: `${client_domain}/user/payments/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${client_domain}/user/payment/cancel`,
         });
 
@@ -46,7 +43,7 @@ router.post("/create-checkout-session", userAuth, async (req, res) => {
         const newOrder = new Order({
             userId,
             turfId,
-            sessionId: session.id,
+            sessionId: session?.id,
             date,
             timeSlot,
             price,
@@ -61,43 +58,53 @@ router.post("/create-checkout-session", userAuth, async (req, res) => {
     }
 });
 
-// ✅ Webhook to Update Order Status After Payment Success
+// ✅ Webhook to Listen for Stripe Payment Events
 router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
     const sig = req.headers["stripe-signature"];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     let event;
     try {
-        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (error) {
-        console.error("⚠️ Webhook Signature Verification Failed:", error.message);
-        return res.status(400).json({ error: "Webhook Signature Verification Failed" });
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+        console.error("⚠️ Webhook signature verification failed:", err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // ✅ Handle Payment Success Event
+    // ✅ Handle different event types
     if (event.type === "checkout.session.completed") {
         const session = event.data.object;
+        console.log("✅ Payment successful for session:", session.id);
 
-        try {
-            const updatedOrder = await Order.findOneAndUpdate(
-                { sessionId: session.id },
-                { status: "Paid" },
-                { new: true }
-            );
-
-            if (updatedOrder) {
-                console.log(`✅ Payment Successful for session: ${session.id}`);
-            } else {
-                console.error(`⚠️ Order not found for session: ${session.id}`);
-            }
-        } catch (dbError) {
-            console.error("❌ Database Update Error:", dbError);
-        }
+        // ✅ Update Order in Database
+        await Order.findOneAndUpdate(
+            { sessionId: session.id },
+            { status: "paid" }
+        );
     }
 
-    res.status(200).json({ received: true });
+    res.json({ received: true });
 });
 
-// ✅ Ensure Webhook Route Uses `express.raw()` Middleware Separately
-router.use(express.json());
+// ✅ Get Payment Session Status
+router.get("/session-status", async (req, res) => {
+    try {
+        const sessionId = req.query.session_id;
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+        // ✅ Update Order if payment is successful
+        if (session.payment_status === "paid") {
+            await Order.findOneAndUpdate({ sessionId }, { status: "paid" });
+        }
+
+        res.send({
+            status: session?.status,
+            customer_email: session?.customer_details?.email,
+            session_data: session,
+        });
+    } catch (error) {
+        res.status(error?.statusCode || 500).json(error.message || "Internal Server Error");
+    }
+});
 
 export { router as paymentRouter };

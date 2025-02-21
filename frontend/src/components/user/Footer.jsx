@@ -23,11 +23,9 @@ export const Footer = () => {
                 <a className="link link-hover">Privacy policy</a>
                 <a className="link link-hover">Cookie policy</a>
                 <Link className="link link-hover" to="/manager/login">
-                Login as a manager
+                Want to Join Us?
                 </Link>
-                <Link className="link link-hover" to="/admin/login">
-                Login as a admin
-                </Link>
+                
             </nav>
             <form>
                 <h6 className="footer-title">Newsletter</h6>

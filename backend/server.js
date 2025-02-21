@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "http://localhost:5173",
+  "http://localhost:5174",
   "https://turf-booking-website-frontend.vercel.app",
 ];
 
@@ -21,7 +21,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-const port = process.env.PORT || 5007;
+const port = process.env.PORT || 5005;
 
 // ✅ Connect to Database
 connectDB()

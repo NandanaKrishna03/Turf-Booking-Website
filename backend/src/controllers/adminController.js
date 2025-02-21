@@ -15,7 +15,11 @@ export const registerAdmin = async (req, res) => {
         const adminData = new AdminModel({ name, email, password: hashedPassword });
         await adminData.save();
         const token = generateToken(adminData._id);
-        res.cookie("token", token, { httpOnly: true });
+        res.cookie("token", token, { 
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production', 
+            sameSite: 'Strict' 
+        });
 
         return res.json({ data: adminData, message: "Admin registered successfully" });
     } catch (error) {
@@ -37,21 +41,25 @@ export const loginAdmin = async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // Generate token with admin role
         const token = generateToken(admin._id, admin.role);
+        res.cookie("token", token, { 
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production', 
+            sameSite: 'Strict' 
+        });
+        
         res.status(200).json({
             message: "Login successful",
             data: {
                 admin,
                 token,
-                role: admin.role, // Return the 'role' of the admin
+                role: admin.role,
             }
         });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
-
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -79,55 +87,56 @@ export const getAllBookings = async (req, res) => {
         return res.status(500).json({ message: error.message || "Internal server error" });
     }
 };
+
 export const deleteUser = async (req, res) => {
     try {
-        console.log("Delete user route hit"); // ✅ Check if function runs
-        console.log("User ID:", req.params.userId); // ✅ Log received ID
+        console.log("Delete user route hit");
+        console.log("User ID:", req.params.userId);
 
-        const { userId } = req.params; // Extract userId from request parameters
-
-        // Check if the user exists
+        const { userId } = req.params;
         const userExists = await UserModel.findById(userId);
         if (!userExists) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Delete the user
         await UserModel.findByIdAndDelete(userId);
-
         return res.json({ message: "User deleted successfully" });
     } catch (error) {
         return res.status(500).json({ message: error.message || "Internal server error" });
     }
 };
-export const deleteManager = async (req, res, next) => {
+
+export const deleteManager = async (req, res) => {
     try {
-        console.log("Delete manager route hit"); // ✅ Debugging log
-        console.log("Manager ID:", req.params.managerId); // ✅ Log received ID
+        console.log("Delete manager route hit");
+        console.log("Manager ID:", req.params.managerId);
 
-        const { managerId } = req.params; // Get manager ID from request params
-
-        // Check if the manager exists
+        const { managerId } = req.params;
         const managerExists = await ManagerModel.findById(managerId);
         if (!managerExists) {
             return res.status(404).json({ message: "Manager not found" });
         }
 
-        // Delete the manager
         await ManagerModel.findByIdAndDelete(managerId);
-
         return res.json({ message: "Manager deleted successfully" });
-
     } catch (error) {
-        console.error(error); // ✅ Log the error for debugging
+        console.error(error);
         return res.status(500).json({ message: error.message || "Internal server error" });
     }
 };
 
 export const adminLogout = async (req, res) => {
     try {
-        res.clearCookie("token");
-        return res.json({ message: "Admin logout successfully" });
+        const token = req.cookies.token;
+        if (token) {
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'Strict'
+            });
+        }
+
+        return res.json({ message: "Admin logged out successfully" });
     } catch (error) {
         return res.status(500).json({ message: error.message || "Internal server error" });
     }

@@ -21,7 +21,7 @@ router.post("/signup", managerSignup);
 router.post("/login", managerLogin);
 router.get("/getAllManagers", managerAuth, getAllManagers);
 router.get("/logout", managerAuth, logout);
-router.put("/profile-update", managerAuth, updateManager);
+router.post("/profile-update", managerAuth, updateManager);
 router.get("/find-manager", managerAuth, findManagerById);
 router.delete("/delete-manager", managerAuth, deleteManager);
 router.get("/turfs", managerAuth, getMyTurfs);

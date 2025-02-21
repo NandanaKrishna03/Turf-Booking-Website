@@ -1,24 +1,20 @@
-
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { ThemeContext } from "../../context/ThemeContext"; // Import ThemeContext
+import { ThemeContext } from "../../context/ThemeContext";
 import { useFetch } from "../../hooks/useFetch";
 
-
 export const ManagerDashboard = () => {
-  const [manager, isLoading, error] = useFetch("/manager/find-manager"); // Fetch manager details
+  const [manager, isLoading, error] = useFetch("/manager/find-manager");
   const navigate = useNavigate();
-  const { theme } = useContext(ThemeContext); // Access current theme and toggle function
+  const { theme } = useContext(ThemeContext);
 
-  // Handle loading state
   if (isLoading) {
-    return <div className="p-6 min-h-screen bg-gray-100">Loading...</div>;
+    return <div className={`p-6 min-h-screen ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>Loading...</div>;
   }
 
-  // Handle error state
   if (error) {
     return (
-      <div className="p-6 min-h-screen bg-gray-100">
+      <div className={`p-6 min-h-screen ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
         <p className="text-red-500">Error: {error.message}</p>
       </div>
     );
@@ -26,42 +22,37 @@ export const ManagerDashboard = () => {
 
   return (
     <div
-      className={`p-6 min-h-screen bg-cover bg-center flex flex-col justify-center items-center transition-all ${
-        theme === "dark" ? "bg-dark-theme" : "bg-light-theme"
+      className={`p-6 min-h-screen flex flex-col justify-center items-center transition-all ${
+        theme === "dark" ? "bg-green-900 text-white" : "bg-green-300 text-black"
       }`}
-      style={{
-        backgroundImage: "url('https://your-image-link.com/background.jpg')", // Add your background image URL here
-      }}
     >
-      <h1 className="text-4xl font-bold text-white mb-6">Hello, {manager?.name} 👋</h1>
+      <h1 className="text-4xl font-bold mb-6">Hello, {manager?.name} 👋</h1>
       
-      {/* Theme Toggle Button */}
-      
-      
-      <div className="flex flex-col md:flex-row gap-6 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
         <button
           onClick={() => navigate("/manager/add-turf")}
-          className="bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition"
+          className="bg-white text-green-600 py-3 px-8 rounded-lg shadow-md hover:bg-green-500 hover:text-white transition"
         >
           Add Turf
         </button>
 
         <button
           onClick={() => navigate("/manager/turfs")}
-          className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-600 text-white py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition"
+          className="bg-white text-green-600 py-3 px-8 rounded-lg shadow-md hover:bg-green-500 hover:text-white transition"
         >
           My Turfs
         </button>
 
         <button
           onClick={() => navigate("/manager/profile")}
-          className="bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-600 text-white py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition"
+          className="bg-white text-green-600 py-3 px-8 rounded-lg shadow-md hover:bg-green-500 hover:text-white transition"
         >
           Profile
         </button>
+
         <button
           onClick={() => navigate("/manager/profile-update")}
-          className="bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-600 text-white py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition"
+          className="bg-white text-green-600 py-3 px-8 rounded-lg shadow-md hover:bg-green-500 hover:text-white transition"
         >
           Profile Update
         </button>

@@ -6,9 +6,10 @@ export const Header = () => {
 
     return (
         <div className="flex justify-between items-center px-14 h-20   shadow-2xl">
-            <div>
-                <h1 className="text-3xl font-bold">TurfNation</h1>
-            </div>
+            <Link to={"/"}>
+            <img src="https://res.cloudinary.com/dk1kmtpwe/image/upload/v1740064302/Screenshot_245_ru80e2.png" alt="" width="200"/>
+
+            </Link>
             <div className="flex justify-center items-center gap-16">
                 <nav>
                     <ul className="flex justify-center items-center gap-10 text-md">

@@ -9,9 +9,10 @@ function App() {
   return (
     <>
        <ThemeProvider>
+       <Toaster/>
       <RouterProvider router={router}>
       <ScrollToTop/>
-      <Toaster/>
+      
       </RouterProvider>
       </ThemeProvider>
     </>

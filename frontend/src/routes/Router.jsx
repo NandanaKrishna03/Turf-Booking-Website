@@ -27,7 +27,7 @@ import { DeleteTurf } from "../pages/manager/Deleteturf";
 import { ManagerBooking } from "../pages/manager/ManagerBookings";
 import AdminLogin from "../pages/admin/AdminLogin";
 import AdminLayout from "../layout/AdminLayout";
-import AdminDashboard from "../pages/admin/Dashboard";
+
 import { ProtectedRouteAdmin } from "./ProtectedRouteAdmin";
 import ManageUsers from "../pages/admin/viewallusers";
 import ManageManagers from "../pages/admin/viewallManager";
@@ -35,6 +35,7 @@ import ViewAllTurfs from "../pages/admin/viewAllTurf";
 import ViewAllBookings from "../pages/admin/viewAllBookings";
 import { ManagerProfile } from "../pages/manager/Profile";
 import PaymentStatus from "../pages/user/payementStatus";
+import Dashboard from "../pages/admin/Dashboard";
 
 
 export const router = createBrowserRouter([
@@ -104,8 +105,8 @@ export const router = createBrowserRouter([
             element: <CreateBooking />,
           },
           {
-            path: "payment/success",
-            element: <PaymentStatus/>, // Added element for success payment
+            path: "payments/success",
+            element:<PaymentStatus/>
           },
         ],
       },
@@ -188,22 +189,22 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "dashboard",
-            element: <AdminDashboard />,
+            element: <Dashboard />,
           },
           {
             path: "users",
             element: <ManageUsers />,
           },
           {
-            path: "getAllManagers",
+            path: "managers",
             element: <ManageManagers />,
           },
           {
-            path: "viewturfs",
+            path: "turfs",
             element: <ViewAllTurfs />,
           },
           {
-            path: "getallbooking",
+            path: "bookings",
             element: <ViewAllBookings />,
           },
         ],

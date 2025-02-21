@@ -40,28 +40,43 @@ export const Signup = () => {
     };
 
     return (
-        <div className="flex min-h-screen flex-col justify-center items-center px-6 py-12">
-            <div className="w-full max-w-md">
-                <h2 className="text-center text-2xl font-bold">Create an Account</h2>
-
-                <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
-                    <input type="text" placeholder="Name" {...register("name")} className="input input-bordered w-full" required />
-                    <input type="email" placeholder="Email" {...register("email")} className="input input-bordered w-full" required />
-                    <input type="password" placeholder="Password" {...register("password")} className="input input-bordered w-full" required />
-                    <input type="password" placeholder="Confirm Password" {...register("confirmPassword")} className="input input-bordered w-full" required />
-
-                    {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-
-                    <button type="submit" className="btn btn-primary w-full">Sign Up</button>
-                </form>
-
-                <p className="mt-4 text-center">
-                    Already have an account?{" "}
-                    <button onClick={() => navigate(isManagerSignup ? "/manager/login" : "/user/login")} className="text-blue-600 underline">
-                        Sign in
-                    </button>
-                </p>
+        
+            <div className="relative w-full min-h-screen flex justify-center items-center">
+                {/* Background Video */}
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                >
+                    <source src="https://res.cloudinary.com/dk1kmtpwe/video/upload/v1740154000/158633-817153726_j4idvn.mp4" type="video/mp4" />
+                </video>
+    
+                {/* Overlay */}
+               
+    
+                {/* Signup Form */}
+                <div className="relative w-full max-w-md bg-white bg-opacity-90 p-8 rounded-lg shadow-lg">
+                    <h2 className="text-center text-2xl font-bold">Create an Account</h2>
+    
+                    <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+                        <input type="text" placeholder="Name" {...register("name")} className="input input-bordered w-full" required />
+                        <input type="email" placeholder="Email" {...register("email")} className="input input-bordered w-full" required />
+                        <input type="password" placeholder="Password" {...register("password")} className="input input-bordered w-full" required />
+                        <input type="password" placeholder="Confirm Password" {...register("confirmPassword")} className="input input-bordered w-full" required />
+    
+                        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+    
+                        <button type="submit" className="btn btn-primary w-full">Sign Up</button>
+                    </form>
+    
+                    <p className="mt-4 text-center">
+                        Already have an account?{" "}
+                        <button onClick={() => navigate(isManagerSignup ? "/manager/login" : "/user/login")} className="text-blue-600 underline">
+                            Sign in
+                        </button>
+                    </p>
+                </div>
             </div>
-        </div>
     );
 };
