@@ -25,7 +25,7 @@ export const UserHeader = () => {
     return (
         <div className="flex justify-between items-center w-full px-20 h-24 shadow-2xl relative">
         <Link to={"/"}>
-            <img src="c:\Users\DELL\Downloads\the playfull logo of word TurfNation with slogan 'Book and play like a pro.' with no background (1).jpg" alt="" />
+            <img src="https://res.cloudinary.com/dk1kmtpwe/image/upload/v1740064302/Screenshot_245_ru80e2.png" alt="" />
         </Link>
 
         {/* Navbar Links */}

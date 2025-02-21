@@ -222,7 +222,9 @@ export const userLogout = async (req, res) => {
         // Clear the "token" cookie if it exists
         if (token) {
             res.clearCookie("token", {
-                httpOnly: true,  // Ensures the cookie is only accessible by the server
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === "production",
+            sameSite: "None", // Ensures the cookie is only accessible by the server
             });
         }
 

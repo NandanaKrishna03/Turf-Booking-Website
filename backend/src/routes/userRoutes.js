@@ -26,7 +26,7 @@ router.post('/login', userLogin);
 router.get('/profile', upload.single("profilepic"), userAuth, userProfile);
 
 // Logout Route
-router.get('/logout', userAuth, userLogout);
+router.get('/logout',  userLogout);
 
 // Profile Update Route
 router.post('/profile-update', upload.single("profilepic"), userAuth, updateUserProfile);
