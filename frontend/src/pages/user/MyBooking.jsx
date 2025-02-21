@@ -17,7 +17,7 @@ export const MyBookings = ({ onBookingChange }) => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axiosInstance.get("/bookings/user",{ withCredentials: true });
+        const response = await axiosInstance.get("/bookings/user");
         console.log("API Response:", response.data);
         setBookings(response.data.bookings);
       } catch (error) {
