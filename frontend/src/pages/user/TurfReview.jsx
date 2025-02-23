@@ -36,28 +36,35 @@ const TurfReviews = ({ turfId }) => {
 
    
 
-const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        await axiosInstance.post(`/review/add-review/${turfId}`, { rating, comment }, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        setRating(1);
-        setComment("");
-        fetchReviews();
-        fetchAverageRating();
-    } catch (error) {
-        console.error("Error adding review:", error);
-        
-        // Check if error is due to authentication failure
-        if (error.response && error.response.status === 401) {
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+    
+        const token = localStorage.getItem("token");
+    
+        if (!token) {
             toast.error("User not logged in! Please log in to submit a review.");
-        } else {
-            toast.error("Failed to add review. Please try again.");
+            return; // Stop execution if the user is not logged in
         }
-    }
-};
-
+    
+        try {
+            await axiosInstance.post(`/review/add-review/${turfId}`, { rating, comment }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setRating(1);
+            setComment("");
+            fetchReviews();
+            fetchAverageRating();
+        } catch (error) {
+            console.error("Error adding review:", error);
+    
+            if (error.response && error.response.status === 401) {
+                toast.error("User not logged in! Please log in to submit a review.");
+            } else {
+                toast.error("Failed to add review. Please try again.");
+            }
+        }
+    };
+    
 
     return (
         <div className="p-4 max-w-lg mx-auto bg-gray-100 rounded-lg shadow-md">
