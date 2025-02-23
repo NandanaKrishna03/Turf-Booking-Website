@@ -13,7 +13,7 @@ function Turf() {
         ? turfList.filter((turf) =>
             searchQuery === "" ||
             turf.title?.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
-            turf.address?.toLowerCase().startsWith(searchQuery.toLowerCase())
+            turf.address?.toLowerCase().includes(searchQuery.toLowerCase())
         )
         : [];
 
