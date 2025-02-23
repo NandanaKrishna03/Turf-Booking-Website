@@ -11,10 +11,11 @@ const TurfReviews = ({ turfId }) => {
     const [avgRating, setAvgRating] = useState(null);
 
     useEffect(() => {
-        fetchReviews();
-        fetchAverageRating();
+        if (turfId) {
+            fetchReviews();
+            fetchAverageRating();
+        }
     }, [turfId]);
-
     const fetchReviews = async () => {
         try {
             const response = await axiosInstance.get(`/review/get-turf-reviews/${turfId}`);
@@ -81,7 +82,7 @@ const handleReviewSubmit = async (e) => {
                 {reviews.length > 0 ? (
                     reviews.map((review) => (
                         <div key={review._id} className="p-3 border-b">
-                            <p><strong>{review.userId.name}</strong> - {review.rating} ⭐</p>
+                            <p><strong>{review.userId?.name}</strong> - {review.rating} ⭐</p>
                             <p>{review.comment}</p>
                         </div>
                     ))

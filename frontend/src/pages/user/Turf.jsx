@@ -7,7 +7,8 @@ import { useFetch } from "../../hooks/useFetch";
 function Turf() {
     const [turfList, isLoading] = useFetch("/turf/get-turf");
     const [searchQuery, setSearchQuery] = useState("");
-
+    console.log("Fetched turfs:", turfList);
+    
     // Filter turfs based on search query (title OR address)
     const filteredTurfs = Array.isArray(turfList)
         ? turfList.filter((turf) =>
