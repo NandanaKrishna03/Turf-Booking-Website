@@ -25,7 +25,7 @@ export const UserHeader = () => {
     return (
         <div className="flex justify-between items-center w-full px-20 h-24 shadow-2xl relative">
         <Link to={"/"}>
-            <img src="https://res.cloudinary.com/dk1kmtpwe/image/upload/v1740064302/Screenshot_245_ru80e2.png" alt="" />
+            <img src="https://res.cloudinary.com/dk1kmtpwe/image/upload/v1740064302/Screenshot_245_ru80e2.png" alt=""  width="200"/>
         </Link>
 
         {/* Navbar Links */}
