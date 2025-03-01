@@ -1,12 +1,16 @@
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { axiosInstance } from "../../config/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { saveUser } from "../../redux/features/userSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ThemeContext } from "../../context/ThemeContext";
 
 export const EditProfile = () => {
+  const { theme } = useContext(ThemeContext);
+  const isDarkMode = theme === "dark";
+
   const { register, handleSubmit, setValue } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,30 +60,96 @@ export const EditProfile = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+    <div
+      className={`flex justify-center items-center min-h-screen transition-all duration-300 ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
+      }`}
+    >
+      <div
+        className={`shadow-lg rounded-lg p-8 w-full max-w-md transition-all duration-300 ${
+          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+        }`}
+      >
         <h2 className="text-2xl font-semibold text-center mb-6">Edit Profile</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col items-center mb-4">
-            <img src={preview} alt="Profile" className="w-24 h-24 rounded-full object-cover mb-2" />
+            <img
+              src={preview}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover mb-2 border"
+            />
             <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="file-upload" />
-            <label htmlFor="file-upload" className="text-blue-600 cursor-pointer">Change Profile Picture</label>
+            <label
+              htmlFor="file-upload"
+              className="cursor-pointer font-medium transition-all text-blue-500 hover:text-blue-600"
+            >
+              Change Profile Picture
+            </label>
           </div>
+
           <div className="mb-4">
-            <label className="block text-gray-700">Name</label>
-            <input type="text" {...register("name")} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required />
+            <label className={`block ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Name</label>
+            <input
+              type="text"
+              {...register("name")}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                isDarkMode
+                  ? "bg-gray-700 text-white border-gray-600 focus:ring-blue-500"
+                  : "bg-white text-black border-gray-300 focus:ring-green-500"
+              }`}
+              required
+            />
           </div>
+
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
-            <input type="email" {...register("email")} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required />
+            <label className={`block ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Email</label>
+            <input
+              type="email"
+              {...register("email")}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                isDarkMode
+                  ? "bg-gray-700 text-white border-gray-600 focus:ring-blue-500"
+                  : "bg-white text-black border-gray-300 focus:ring-green-500"
+              }`}
+              required
+            />
           </div>
+
           <div className="mb-4">
-            <label className="block text-gray-700">Phone Number</label>
-            <input type="text" {...register("phoneNumber")} className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" required />
+            <label className={`block ${isDarkMode ? "text-gray-300" : "text-gray-700"}`}>Phone Number</label>
+            <input
+              type="text"
+              {...register("phoneNumber")}
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                isDarkMode
+                  ? "bg-gray-700 text-white border-gray-600 focus:ring-blue-500"
+                  : "bg-white text-black border-gray-300 focus:ring-green-500"
+              }`}
+              required
+            />
           </div>
+
           <div className="flex justify-between">
-            <button type="button" className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Reset</button>
-            <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Save</button>
+            <button
+              type="button"
+              className={`px-4 py-2 rounded-lg transition-all ${
+                isDarkMode
+                  ? "bg-gray-600 text-white hover:bg-gray-700"
+                  : "bg-gray-300 text-black hover:bg-gray-400"
+              }`}
+            >
+              Reset
+            </button>
+            <button
+              type="submit"
+              className={`px-4 py-2 font-semibold rounded-lg transition-all ${
+                isDarkMode
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-green-500 text-white hover:bg-green-600"
+              }`}
+            >
+              Save
+            </button>
           </div>
         </form>
       </div>
