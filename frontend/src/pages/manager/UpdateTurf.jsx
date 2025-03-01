@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
 import { useSelector } from "react-redux";
-
+import { ThemeContext } from "../../context/ThemeContext";
 
 export const UpdateTurf = () => {
+    const { theme } = useContext(ThemeContext);
+    const isDarkMode = theme === "dark";
+
     const navigate = useNavigate();
     const { id } = useParams();
     const { manager } = useSelector((state) => state.manager);
@@ -95,27 +98,118 @@ export const UpdateTurf = () => {
     };
 
     return (
-        <div className="p-6 min-h-screen flex flex-col items-center bg-gray-100 text-gray-900">
-            <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
+        <div className={`p-6 min-h-screen flex flex-col items-center transition-all duration-300 ${
+            isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
+        }`}>
+            <div className={`shadow-lg rounded-lg p-6 w-full max-w-lg transition-all ${
+                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+            }`}>
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-3xl font-bold text-center">Update Turf</h2>
-                    
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input type="text" name="title" value={formData.title} onChange={handleChange} required className="w-full p-2 border rounded" placeholder="Title" />
-                    <input type="text" name="category" value={formData.category.join(",")} onChange={handleChange} required className="w-full p-2 border rounded" placeholder="Category (comma-separated)" />
-                    <textarea name="description" value={formData.description} onChange={handleChange} required className="w-full p-2 border rounded" placeholder="Description"></textarea>
-                    <input type="text" name="address" value={formData.address} onChange={handleChange} required className="w-full p-2 border rounded" placeholder="Address" />
-                    <input type="number" name="price" value={formData.price} onChange={handleChange} required className="w-full p-2 border rounded" placeholder="Price" />
-                    <input type="text" name="availableDates" value={formData.availableDates.join(",")} onChange={handleChange} required className="w-full p-2 border rounded" placeholder="Available Dates (comma-separated)" />
-                    <input type="text" name="availableTimeSlots" value={formData.availableTimeSlots.join(",")} onChange={handleChange} required className="w-full p-2 border rounded" placeholder="Available Time Slots (comma-separated)" />
+                    <input 
+                        type="text" 
+                        name="title" 
+                        value={formData.title} 
+                        onChange={handleChange} 
+                        required 
+                        className={`w-full p-2 border rounded ${
+                            isDarkMode ? "bg-gray-700 text-white border-gray-600" : "bg-white text-black border-gray-300"
+                        }`} 
+                        placeholder="Title" 
+                    />
+                    <input 
+                        type="text" 
+                        name="category" 
+                        value={formData.category.join(",")} 
+                        onChange={handleChange} 
+                        required 
+                        className={`w-full p-2 border rounded ${
+                            isDarkMode ? "bg-gray-700 text-white border-gray-600" : "bg-white text-black border-gray-300"
+                        }`} 
+                        placeholder="Category (comma-separated)" 
+                    />
+                    <textarea 
+                        name="description" 
+                        value={formData.description} 
+                        onChange={handleChange} 
+                        required 
+                        className={`w-full p-2 border rounded ${
+                            isDarkMode ? "bg-gray-700 text-white border-gray-600" : "bg-white text-black border-gray-300"
+                        }`} 
+                        placeholder="Description"
+                    ></textarea>
+                    <input 
+                        type="text" 
+                        name="address" 
+                        value={formData.address} 
+                        onChange={handleChange} 
+                        required 
+                        className={`w-full p-2 border rounded ${
+                            isDarkMode ? "bg-gray-700 text-white border-gray-600" : "bg-white text-black border-gray-300"
+                        }`} 
+                        placeholder="Address" 
+                    />
+                    <input 
+                        type="number" 
+                        name="price" 
+                        value={formData.price} 
+                        onChange={handleChange} 
+                        required 
+                        className={`w-full p-2 border rounded ${
+                            isDarkMode ? "bg-gray-700 text-white border-gray-600" : "bg-white text-black border-gray-300"
+                        }`} 
+                        placeholder="Price" 
+                    />
+                    <input 
+                        type="text" 
+                        name="availableDates" 
+                        value={formData.availableDates.join(",")} 
+                        onChange={handleChange} 
+                        required 
+                        className={`w-full p-2 border rounded ${
+                            isDarkMode ? "bg-gray-700 text-white border-gray-600" : "bg-white text-black border-gray-300"
+                        }`} 
+                        placeholder="Available Dates (comma-separated)" 
+                    />
+                    <input 
+                        type="text" 
+                        name="availableTimeSlots" 
+                        value={formData.availableTimeSlots.join(",")} 
+                        onChange={handleChange} 
+                        required 
+                        className={`w-full p-2 border rounded ${
+                            isDarkMode ? "bg-gray-700 text-white border-gray-600" : "bg-white text-black border-gray-300"
+                        }`} 
+                        placeholder="Available Time Slots (comma-separated)" 
+                    />
                     
                     <div className="space-y-2">
-                        {formData.previewImage && <img src={formData.previewImage} alt="Turf Preview" className="w-full h-40 object-cover rounded-lg" />}
-                        <input type="file" name="image" onChange={handleChange} className="w-full p-2 border rounded" />
+                        {formData.previewImage && (
+                            <img 
+                                src={formData.previewImage} 
+                                alt="Turf Preview" 
+                                className="w-full h-40 object-cover rounded-lg"
+                            />
+                        )}
+                        <input 
+                            type="file" 
+                            name="image" 
+                            onChange={handleChange} 
+                            className="w-full p-2 border rounded"
+                        />
                     </div>
 
-                    <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Update Turf</button>
+                    <button 
+                        type="submit" 
+                        className={`w-full p-2 rounded font-semibold transition-all ${
+                            isDarkMode ? "bg-blue-700 text-white hover:bg-blue-800" 
+                            : "bg-blue-600 text-white hover:bg-blue-700"
+                        }`}
+                    >
+                        Update Turf
+                    </button>
                 </form>
             </div>
         </div>
