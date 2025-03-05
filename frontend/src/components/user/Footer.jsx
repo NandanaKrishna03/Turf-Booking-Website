@@ -58,7 +58,7 @@ export const Footer = () => {
                 </div>
 
                 {/* QR Code for App Download */}
-                <div className="mt-10 lg:mt-0 flex flex-col items-center">
+                <div className="mt-10 lg:mt-0 flex flex-col items-start lg:items-center self-start">
                     <div className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-300"} p-4 rounded-lg`}>
                         <p className="text-sm font-semibold mb-2 text-center">DOWNLOAD THE APP</p>
                         <img 
