@@ -13,7 +13,7 @@ export const Profile = () => {
     const [activeTab, setActiveTab] = useState("all");
 
     return (
-        <div className={`min-h-screen flex ${theme === "light" ? "bg-gray-100" : "bg-gray-900 text-white"}`}>
+        <div className={`min-h-screen pt-20  flex ${theme === "light" ? "bg-gray-100" : "bg-gray-900 text-white"}`}>
             {/* Sidebar */}
             <aside className={`w-1/4 min-h-screen p-6 flex flex-col items-center shadow-lg ${theme === "light" ? "bg-white text-gray-800" : "bg-gray-800 text-white"}`}>
                 {/* Profile Picture & Info */}
