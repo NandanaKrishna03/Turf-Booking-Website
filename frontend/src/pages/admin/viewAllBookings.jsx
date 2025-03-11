@@ -8,14 +8,18 @@ const ViewAllBookings = () => {
     const handleDeleteBooking = async (bookingId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this Booking?");
         if (!confirmDelete) return;
+    
         try {
             await axiosInstance.delete(`/admin/booking/${bookingId}`);
-            refetch(); // Refresh the list after deletion
+    
+            // ✅ Remove the deleted booking from the list manually
+            refetch((prevBookings) => prevBookings.filter((booking) => booking._id !== bookingId));
+    
         } catch (err) {
             console.error("Error deleting booking:", err);
         }
     };
-
+    
     if (isLoading) {
         return <div className="text-center text-lg">Loading...</div>;
     }
