@@ -2,29 +2,24 @@ import { axiosInstance } from "../../config/axiosInstance";
 import { useFetch } from "../../hooks/useFetch";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import toast from "react-hot-toast";
 
 const ViewAllBookings = () => {
-    const { theme } = useContext(ThemeContext);
+    const { theme } = useContext(ThemeContext);  // Using ThemeContext for dark mode
     const [bookings, isLoading, error, refetch] = useFetch("/admin/bookings");
-    const isDarkMode = theme === "dark";
 
     const handleDeleteBooking = async (bookingId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this Booking?");
         if (!confirmDelete) return;
-
         try {
             await axiosInstance.delete(`/admin/booking/${bookingId}`);
-            toast.success("Booking deleted successfully!");
-            refetch();
+            refetch(); // Refresh the list after deletion
         } catch (err) {
             console.error("Error deleting booking:", err);
-            toast.error("Failed to delete booking. Try again.");
         }
     };
 
     if (isLoading) {
-        return <div className="text-center text-lg text-gray-600 dark:text-gray-300">Loading...</div>;
+        return <div className="text-center text-lg text-black dark:text-white">Loading...</div>;
     }
 
     if (error) {
@@ -32,7 +27,7 @@ const ViewAllBookings = () => {
     }
 
     return (
-        <div className={`min-h-screen p-6 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
+        <div className={`min-h-screen p-6 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
             <h1 className="text-3xl font-bold text-center mb-6">All Bookings</h1>
             <div className="overflow-x-auto">
                 <table className="w-full border border-gray-300 dark:border-gray-600 rounded-lg text-center">
@@ -48,7 +43,7 @@ const ViewAllBookings = () => {
                     </thead>
                     <tbody>
                         {bookings?.map((booking) => (
-                            <tr key={booking._id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200">
+                            <tr key={booking._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                                 <td className="border border-gray-400 dark:border-gray-600 px-4 py-2">{booking._id}</td>
                                 <td className="border border-gray-400 dark:border-gray-600 px-4 py-2">{booking.user?.name}</td>
                                 <td className="border border-gray-400 dark:border-gray-600 px-4 py-2">{booking.turf?.title}</td>
@@ -57,7 +52,7 @@ const ViewAllBookings = () => {
                                 <td className="border border-gray-400 dark:border-gray-600 px-4 py-2">
                                     <button 
                                         onClick={() => handleDeleteBooking(booking._id)}
-                                        className="bg-red-500 dark:bg-red-600 text-white px-3 py-1 rounded hover:bg-red-600 dark:hover:bg-red-700 transition-all duration-200">
+                                        className="bg-red-500 dark:bg-red-600 text-white px-3 py-1 rounded hover:bg-red-600 dark:hover:bg-red-700">
                                         Delete
                                     </button>
                                 </td>
