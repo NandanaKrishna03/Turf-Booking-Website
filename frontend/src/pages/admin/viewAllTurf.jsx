@@ -2,10 +2,12 @@ import { axiosInstance } from "../../config/axiosInstance";
 import { useFetch } from "../../hooks/useFetch";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
+import toast from "react-hot-toast";
 
 const ViewAllTurfs = () => {
     const { theme } = useContext(ThemeContext);
     const [turfs, isLoading, error, refetch] = useFetch("/admin/turfs");
+    const isDarkMode = theme === "dark";
 
     const handleDeleteTurf = async (turfId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this turf?");
@@ -14,10 +16,11 @@ const ViewAllTurfs = () => {
         try {
             console.log("Deleting Turf with ID:", turfId);
             await axiosInstance.delete(`/admin/turf/${turfId}`);
+            toast.success("Turf deleted successfully!");
             refetch(); // Refresh the list after deletion
         } catch (error) {
             console.error("Error deleting turf:", error);
-            alert("Failed to delete turf. Please try again.");
+            toast.error("Failed to delete turf. Please try again.");
         }
     };
 
@@ -30,7 +33,7 @@ const ViewAllTurfs = () => {
     }
 
     return (
-        <div className={`max-w-5xl mx-auto mt-10 p-6 shadow-lg rounded-lg transition-all duration-300 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
+        <div className={`max-w-5xl mx-auto mt-10 p-6 shadow-lg rounded-lg transition-all duration-300 ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
             
             <h1 className="text-2xl font-semibold text-center mb-6">All Turfs</h1>
 
