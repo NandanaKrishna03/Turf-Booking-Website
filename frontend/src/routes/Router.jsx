@@ -16,7 +16,7 @@ import { EditProfile } from "../pages/user/EditProfile";
 import { ChangePassword } from "../pages/user/changePassword";
 import { DeactivateAccount } from "../pages/user/deactivate";
 import { MyBookings } from "../pages/user/MyBooking";
-import { EditManagerProfile } from "../pages/manager/profileUpdate";
+import  EditManagerProfile  from "../pages/manager/profileUpdate";
 import { ManagerDashboard } from "../pages/manager/ManagerDashBoard";
 import { TurfBookings } from "../pages/manager/TurfBookings";
 import  MyTurfs  from "../pages/manager/MyTurf";
