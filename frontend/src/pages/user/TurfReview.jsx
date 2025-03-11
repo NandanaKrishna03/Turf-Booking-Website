@@ -84,7 +84,7 @@ export const TurfReview = ({ turfId }) => {
 
                             {isUserAuth && review.userId?._id === user._id && (
                                 <button
-                                    className="text-red-600 hover:text-red-800 flex items-center gap-1 mt-2"
+                                    className="text-red-400 hover:text-red-500 flex items-center gap-1 mt-2"
                                     onClick={() => deleteReview(review._id)}
                                 >
                                     <FaTrash /> Delete
