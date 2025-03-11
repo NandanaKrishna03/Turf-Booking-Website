@@ -2,10 +2,12 @@ import { axiosInstance } from "../../config/axiosInstance";
 import { useFetch } from "../../hooks/useFetch";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
+import toast from "react-hot-toast";
 
 const ManageManagers = () => {
     const { theme } = useContext(ThemeContext);
     const [managers, isLoading, error, refetch] = useFetch("/admin/getAllManagers");
+    const isDarkMode = theme === "dark";
 
     const handleDeleteManager = async (managerId) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this manager?");
@@ -13,10 +15,11 @@ const ManageManagers = () => {
 
         try {
             await axiosInstance.delete(`/admin/manager/${managerId}`);
+            toast.success("Manager deleted successfully!");
             refetch(); // Refresh the list after deletion
         } catch (error) {
             console.error("Error deleting manager:", error);
-            alert("Failed to delete manager. Please try again.");
+            toast.error("Failed to delete manager. Please try again.");
         }
     };
 
@@ -29,8 +32,9 @@ const ManageManagers = () => {
     }
 
     return (
-        <div className={`max-w-5xl mx-auto mt-10 p-6 shadow-lg rounded-lg ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
-            <h1 className="text-2xl font-semibold text-center mb-6 text-black dark:text-white">Manage Managers</h1>
+        <div className={`max-w-5xl mx-auto mt-10 p-6 shadow-lg rounded-lg ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
+            <h1 className="text-2xl font-semibold text-center mb-6">Manage Managers</h1>
+
             {managers?.length === 0 ? (
                 <p className="text-center text-gray-500 dark:text-gray-400">No managers available.</p>
             ) : (
