@@ -1,136 +1,120 @@
-import { useForm } from "react-hook-form";
-import { useEffect, useState, useContext } from "react";
-import { axiosInstance } from "../../config/axiosInstance";
+import { useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { axiosInstance } from "../../config/axiosInstance";
 import { saveManager } from "../../redux/features/managerSlice";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ThemeContext } from "../../context/ThemeContext";
 
-export const EditManagerProfile = () => {
-  const { register, handleSubmit, setValue } = useForm();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { theme } = useContext(ThemeContext);
-  const manager = useSelector((state) => state.manager.manager);
-  const [preview, setPreview] = useState(manager?.profilepic || "");
-  const [file, setFile] = useState(null);
+const EditManagerProfile = () => {
+    const dispatch = useDispatch();
+    const { manager } = useSelector((state) => state.manager);
+    const { theme } = useContext(ThemeContext);
+    
+    const [formData, setFormData] = useState({
+        name: manager?.name || "",
+        phoneNumber: manager?.phoneNumber || "",
+        profilepic: manager?.profilepic || "",
+    });
+    const [image, setImage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchManagerDetails = async () => {
-      try {
-        const response = await axiosInstance.get("/manager/find-manager");
-        const managerData = response.data.data;
-        
-        setValue("name", managerData.name);
-        setValue("email", managerData.email);
-        setValue("phoneNumber", managerData.phoneNumber);
-        setPreview(managerData.profilepic);
-        
-        dispatch(saveManager(managerData));
-      } catch (error) {
-        console.error("Failed to fetch manager details:", error);
-      }
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    if (!manager) {
-      fetchManagerDetails();
-    } else {
-      setValue("name", manager.name);
-      setValue("email", manager.email);
-      setValue("phoneNumber", manager.phoneNumber);
-      setPreview(manager.profilepic);
-    }
-  }, [manager, setValue, dispatch]);
+    const handleImageChange = (e) => {
+        setImage(e.target.files[0]);
+    };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    if (selectedFile) {
-      setPreview(URL.createObjectURL(selectedFile));
-    }
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-  const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("phoneNumber", data.phoneNumber);
-      if (file) {
-        formData.append("profilepic", file);
-      }
-  
-      const response = await axiosInstance.post("/manager/profile-update", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+        try {
+            const formDataToSend = new FormData();
+            formDataToSend.append("name", formData.name);
+            formDataToSend.append("phoneNumber", formData.phoneNumber);
+            if (image) {
+                formDataToSend.append("profilepic", image);
+            }
 
-      dispatch(saveManager(response.data.data));
-      toast.success("Profile updated successfully");
-      navigate("/manager/dashboard");
-    } catch (error) {
-      toast.error("Failed to update profile");
-      console.error(error);
-    }
-  };
+            const response = await axiosInstance.post("/manager/profile-update", formDataToSend, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
+            
+            dispatch(saveManager(response.data.data));
+            toast.success("Profile updated successfully");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Update failed");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <div className={`hero min-h-screen transition-all duration-300 ${theme === 'dark' ? 'bg-gray-900' : 'bg-base-200'}`}>
-      <div className="hero-content flex-col lg:flex-row-reverse">
-        <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-          <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col items-center">
-              <img src={preview} alt="Profile Preview" className="w-32 h-32 rounded-full object-cover mb-3 border-2 border-gray-00" />
-              <input
-                type="file"
-                accept="image/*"
-                className="file-input file-input-bordered w-full max-w-xs"
-                onChange={handleFileChange}
-              />
+    return (
+        <div className={`min-h-screen flex items-center justify-center p-6 ${theme === "light" ? "bg-gray-100" : "bg-gray-900"}`}>
+            <div className={`w-full max-w-md p-6 rounded-lg shadow-lg ${theme === "light" ? "bg-white" : "bg-gray-800"}`}>
+                <h2 className="text-2xl font-semibold text-center mb-6 dark:text-white">Edit Profile</h2>
+
+                {/* Profile Picture Preview */}
+                <div className="flex justify-center">
+                    {image ? (
+                        <img src={URL.createObjectURL(image)} alt="New Profile" className="w-24 h-24 rounded-full object-cover shadow-md" />
+                    ) : (
+                        formData.profilepic && (
+                            <img src={formData.profilepic} alt="Current Profile" className="w-24 h-24 rounded-full object-cover shadow-md" />
+                        )
+                    )}
+                </div>
+
+                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                    <div>
+                    <label className={`block text-sm font-medium ${theme === "light" ? "text-black" : "text-gray-300"}`}>Name</label>
+                    
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className={`w-full border rounded-md px-3 py-2 focus:ring focus:ring-blue-300 ${theme === "light" ? "bg-white text-black" : "bg-gray-700 text-white"}`}
+                            required
+                        />
+                    </div>
+
+                    <div>
+                    <label className={`block text-sm font-medium ${theme === "light" ? "text-black" : "text-gray-300"}`}>Phone Number</label>
+                    
+                        <input
+                            type="text"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            className={`w-full border rounded-md px-3 py-2 focus:ring focus:ring-blue-300 ${theme === "light" ? "bg-white text-black" : "bg-gray-700 text-white"}`}
+                        />
+                    </div>
+
+                    <div>
+                        <label className={`block text-sm font-medium ${theme === "light" ? "text-black" : "text-gray-300"}`}>Profile Picture</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className={`w-full border rounded-md px-3 py-2 file:border-0 file:px-4 file:py-2 file:rounded-md file:cursor-pointer ${theme === "light" ? "bg-white text-black file:bg-gray-200 file:text-black" : "bg-gray-700 text-white file:bg-gray-900 file:text-white"}`}
+                        />
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 text-white font-medium px-4 py-2 rounded-md hover:bg-blue-700 transition disabled:bg-blue-400"
+                        disabled={loading}
+                    >
+                        {loading ? "Updating..." : "Save Changes"}
+                    </button>
+                </form>
             </div>
-            <div className="form-control">
-              <label className="label">
-                <span className={`label-text ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Name</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Name"
-                {...register("name")}
-                className={`input input-bordered ${theme === 'dark' ? 'text-white' : 'text-black'}`}
-                required
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className={`label-text ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Email</span>
-              </label>
-              <input
-                type="email"
-                placeholder="Email"
-                {...register("email")}
-                className={`input input-bordered ${theme === 'dark' ? 'text-white' : 'text-black'}`}
-                required
-                disabled
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className={`label-text ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Phone Number</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Phone Number"
-                {...register("phoneNumber")}
-                className={`input input-bordered ${theme === 'dark' ? 'text-white' : 'text-black'}`}
-                required
-              />
-            </div>
-            <div className="form-control mt-6">
-              <button className="btn btn-primary">Update Profile</button>
-            </div>
-          </form>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
+
+export default EditManagerProfile;
