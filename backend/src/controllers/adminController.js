@@ -124,6 +124,41 @@ export const deleteManager = async (req, res) => {
         return res.status(500).json({ message: error.message || "Internal server error" });
     }
 };
+export const deleteTurf = async (req, res) => {
+    try {
+        console.log("Delete turf route hit");
+        console.log("Turf ID:", req.params.turfId);
+
+        const { turfId } = req.params;
+        const turfExists = await Turf.findById(turfId);
+        if (!turfExists) {
+            return res.status(404).json({ message: "Turf not found" });
+        }
+
+        await Turf.findByIdAndDelete(turfId);
+        return res.json({ message: "Turf deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+export const deleteBooking = async (req, res) => {
+    try {
+        console.log("Delete booking route hit");
+        console.log("Booking ID:", req.params.bookingId);
+
+        const { bookingId } = req.params;
+        const bookingExists = await BookingModel.findById(bookingId);
+        if (!bookingExists) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        await BookingModel.findByIdAndDelete(bookingId);
+        return res.json({ message: "Booking deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Internal server error" });
+    }
+};
 
 export const adminLogout = async (req, res) => {
     try {
