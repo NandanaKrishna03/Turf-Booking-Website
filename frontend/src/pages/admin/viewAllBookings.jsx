@@ -1,12 +1,17 @@
 import { axiosInstance } from "../../config/axiosInstance";
 import { useFetch } from "../../hooks/useFetch";
+import { useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const ViewAllBookings = () => {
+    const { theme } = useContext(ThemeContext);  // Using ThemeContext for dark mode
     const [bookings, isLoading, error, refetch] = useFetch("/admin/bookings");
 
     const handleDeleteBooking = async (bookingId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this Booking?");
+        if (!confirmDelete) return;
         try {
-            await axiosInstance.delete(`/bookings/cancel/${bookingId}`);
+            await axiosInstance.delete(`/admin/booking/${bookingId}`);
             refetch(); // Refresh the list after deletion
         } catch (err) {
             console.error("Error deleting booking:", err);
@@ -14,15 +19,15 @@ const ViewAllBookings = () => {
     };
 
     if (isLoading) {
-        return <div className="text-center text-lg">Loading...</div>;
+        return <div className="text-center text-lg text-black dark:text-white">Loading...</div>;
     }
 
     if (error) {
-        return <div className="text-center text-red-500">{error}</div>;
+        return <div className="text-center text-red-500 dark:text-red-400">{error}</div>;
     }
 
     return (
-        <div className="min-h-screen p-6 bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
+        <div className={`min-h-screen p-6 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
             <h1 className="text-3xl font-bold text-center mb-6">All Bookings</h1>
             <div className="overflow-x-auto">
                 <table className="w-full border border-gray-300 dark:border-gray-600 rounded-lg text-center">
@@ -45,7 +50,8 @@ const ViewAllBookings = () => {
                                 <td className="border border-gray-400 dark:border-gray-600 px-4 py-2">{new Date(booking.date).toLocaleDateString()}</td>
                                 <td className="border border-gray-400 dark:border-gray-600 px-4 py-2">{booking.timeSlot}</td>
                                 <td className="border border-gray-400 dark:border-gray-600 px-4 py-2">
-                                    <button onClick={() => handleDeleteBooking(booking._id)}
+                                    <button 
+                                        onClick={() => handleDeleteBooking(booking._id)}
                                         className="bg-red-500 dark:bg-red-600 text-white px-3 py-1 rounded hover:bg-red-600 dark:hover:bg-red-700">
                                         Delete
                                     </button>
