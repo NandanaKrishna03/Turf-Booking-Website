@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
 import { FaStar, FaTrash } from "react-icons/fa";
 import { axiosInstance } from "../../config/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ThemeContext } from "../../context/ThemeContext";
 
 export const TurfReview = ({ turfId }) => {
     const [reviews, setReviews] = useState([]);
@@ -14,6 +15,7 @@ export const TurfReview = ({ turfId }) => {
 
     const navigate = useNavigate();
     const { isUserAuth, user } = useSelector((state) => state.user);
+    const { theme } = useContext(ThemeContext);
 
     useEffect(() => {
         if (turfId) fetchReviews();
@@ -25,8 +27,7 @@ export const TurfReview = ({ turfId }) => {
             const res = await axiosInstance.get(`/review/get-turf-reviews/${turfId}`);
             setReviews(res.data.data);
         } catch (err) {
-           console.log(err);
-           
+            console.log(err);
         }
     };
 
@@ -65,26 +66,21 @@ export const TurfReview = ({ turfId }) => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-5">Reviews</h2>
+        <div className={`max-w-2xl mx-auto p-6 rounded-lg shadow-lg border ${theme === "light" ? "bg-white text-gray-800 border-gray-200" : "bg-gray-800 text-white border-gray-700"}`}>
+            <h2 className="text-3xl font-semibold mb-5">Reviews</h2>
 
             {/* Display Reviews */}
             <div className="space-y-4">
                 {reviews.length > 0 ? (
                     reviews.map((review) => (
-                        <div
-                            key={review._id}
-                            className="p-4 border border-gray-300 rounded-lg shadow-sm bg-gray-50"
-                        >
-                            <p className="font-semibold text-gray-700">
-                                {review.userId?.name || "Anonymous User"}
-                            </p>
+                        <div key={review._id} className={`p-4 rounded-lg shadow-sm border ${theme === "light" ? "bg-gray-50 border-gray-300" : "bg-gray-700 border-gray-600"}`}>
+                            <p className="font-semibold">{review.userId?.name || "Anonymous User"}</p>
                             <div className="flex mt-1">
                                 {[...Array(5)].map((_, i) => (
                                     <FaStar key={i} className="mr-1" color={i < review.rating ? "#ffc107" : "#e4e5e9"} />
                                 ))}
                             </div>
-                            <p className="text-gray-600 mt-1">{review.comment}</p>
+                            <p className="mt-1">{review.comment}</p>
 
                             {isUserAuth && review.userId?._id === user._id && (
                                 <button
@@ -105,14 +101,12 @@ export const TurfReview = ({ turfId }) => {
             <div className="mt-6">
                 {isUserAuth ? (
                     <>
-                        <h3 className="text-lg font-semibold mb-2 text-gray-700">Leave a Review</h3>
+                        <h3 className="text-lg font-semibold mb-2">Leave a Review</h3>
                         <div className="flex space-x-2 mb-3">
                             {[...Array(5)].map((_, i) => (
                                 <FaStar
                                     key={i}
-                                    className={`cursor-pointer transition-all duration-150 ${
-                                        (hover || rating) > i ? "text-yellow-400" : "text-gray-300"
-                                    }`}
+                                    className={`cursor-pointer transition-all duration-150 ${theme === "light" ? (hover || rating) > i ? "text-yellow-400" : "text-gray-300" : (hover || rating) > i ? "text-yellow-400" : "text-gray-500"}`}
                                     onMouseEnter={() => setHover(i + 1)}
                                     onMouseLeave={() => setHover(null)}
                                     onClick={() => setRating(i + 1)}
@@ -120,7 +114,7 @@ export const TurfReview = ({ turfId }) => {
                             ))}
                         </div>
                         <textarea
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className={`w-full p-2 rounded-lg focus:outline-none focus:ring-2 ${theme === "light" ? "border-gray-300 focus:ring-blue-400 bg-white text-black" : "border-gray-600 focus:ring-blue-500 bg-gray-700 text-white"}`}
                             placeholder="Write a review..."
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
