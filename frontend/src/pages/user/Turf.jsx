@@ -22,7 +22,7 @@ function Turf() {
 
     return (
         <div
-            className={`flex flex-col items-center justify-start px-10 py-16 min-h-screen transition-all duration-300 ${
+            className={`mt-20 flex flex-col items-center justify-start px-10 py-16 min-h-screen transition-all duration-300 ${
                 isDarkMode ? "bg-gray-900 text-white" : "bg-gradient-to-r from-gray-100 to-blue-100 text-gray-800"
             }`}
         >
