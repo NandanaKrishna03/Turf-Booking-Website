@@ -34,43 +34,47 @@ export const Header = () => {
                 />
             </video>
 
-            {/* Header */}
-            <div
-                className={`fixed top-0 left-0 w-full flex justify-between items-center px-14 h-20 shadow-2xl z-50 transition-colors duration-500 ${
-                    scrollY > 50
-                        ? theme === "dark"
-                            ? "bg-gray-900 text-white"
-                            : "bg-white text-black"
-                        : "bg-transparent text-white"
-                }`}
-            >
-                <Link to={"/"}>
-                    <img
-                        src="https://res.cloudinary.com/dk1kmtpwe/image/upload/v1740064302/Screenshot_245_ru80e2.png"
-                        alt="Logo"
-                        width="200"
-                    />
-                </Link>
+           {/* Header */}
+<div
+    className={`fixed top-0 left-0 w-full flex justify-between items-center px-6 sm:px-14 h-20 shadow-2xl z-50 transition-colors duration-500 ${
+        scrollY > 50
+            ? theme === "dark"
+                ? "bg-gray-900 text-white"
+                : "bg-white text-black"
+            : "bg-transparent text-white"
+    }`}
+>
+    <Link to={"/"}>
+        <img
+            src="https://res.cloudinary.com/dk1kmtpwe/image/upload/v1740064302/Screenshot_245_ru80e2.png"
+            alt="Logo"
+            width="200"
+        />
+    </Link>
 
-                {/* Desktop Menu */}
-                <div className="lg:flex hidden items-center gap-8 text-lg font-medium">
-                    <Link to="/" className="hover:text-blue-500 transition">Home</Link>
-                    <Link to="/about" className="hover:text-blue-500 transition">About</Link>
-                    <Link to="/turfs" className="hover:text-blue-500 transition">Turfs</Link>
-                    <button
-                        className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                        onClick={() => navigate("user/signup")}
-                    >
-                        Join Us
-                    </button>
-                    <Darkmode />
-                </div>
+    {/* Desktop Menu */}
+    <div className="hidden lg:flex items-center gap-8 text-lg font-medium ml-auto">
+        <Link to="/" className="hover:text-blue-500 transition">Home</Link>
+        <Link to="/about" className="hover:text-blue-500 transition">About</Link>
+        <Link to="/turfs" className="hover:text-blue-500 transition">Turfs</Link>
+        <button
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            onClick={() => navigate("user/signup")}
+        >
+            Join Us
+        </button>
+        <Darkmode />
+    </div>
 
-                {/* Mobile Menu Button */}
-                <button onClick={() => setSidebarOpen(true)} className={`p-2 rounded-md lg:hidden`}>
-                    <Menu size={28} />
-                </button>
-            </div>
+    {/* Mobile & Tablet Menu Button (☰) */}
+    <button
+        onClick={() => setSidebarOpen(true)}
+        className="ml-auto  p-0 rounded-md lg:hidden"
+    >
+        <Menu size={28} />
+    </button>
+</div>
+
 
             {/* Sidebar */}
             <div
