@@ -14,7 +14,7 @@ function About() {
       }`}
     >
       {/* Header Section */}
-      <h1 className="text-4xl md:text-5xl font-bold text-green-700 drop-shadow-lg">
+      <h1 className="text-4xl md:text-5xl font-bold text-green-700 drop-shadow-lg mt-15">
         TurfNation
       </h1>
       <p className="mt-4 text-lg md:text-xl font-medium max-w-3xl">
