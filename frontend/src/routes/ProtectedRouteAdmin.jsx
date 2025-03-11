@@ -4,18 +4,13 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 export const ProtectedRouteAdmin = () => {
   const navigate = useNavigate();
-  const adminState = useSelector((state) => state.admin);
-  const isAdminAuth = adminState?.isAdminAuth || false;  // Use isAdminAuth to check authentication
+  const isAdminAuth = useSelector((state) => state.admin.isAdminAuth);
 
   useEffect(() => {
     if (!isAdminAuth) {
-      // If not authenticated, navigate to login
-      navigate("/admin/login");
+      navigate("/admin/login", { replace: true });
     }
   }, [isAdminAuth, navigate]);
 
-  // If not authenticated, return null to prevent rendering the protected route
-  if (!isAdminAuth) return null;
-
-  return <Outlet />;
+  return isAdminAuth ? <Outlet /> : null;
 };
