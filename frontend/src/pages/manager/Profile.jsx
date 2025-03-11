@@ -1,35 +1,43 @@
+import { useFetch } from "../../hooks/useFetch";
+import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import { useFetch } from "../../hooks/useFetch";
 
 export const ManagerProfile = () => {
-  const { theme } = useContext(ThemeContext);
-  const [manager, isLoading, error] = useFetch("/manager/find-manager");
+    const [profileData] = useFetch("/manager/find-manager");
+    const navigate = useNavigate();
+    const { theme } = useContext(ThemeContext);
 
-  if (isLoading) 
-    return <div className={`flex justify-center items-center h-screen text-xl ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>Loading...</div>;
-  if (error) 
-    return <div className={`flex justify-center items-center h-screen text-xl ${theme === 'dark' ? 'text-red-400' : 'text-red-500'}`}>Error: {error.message}</div>;
+    return (
+        <div className={`min-h-screen pt-20 flex ${theme === "light" ? "bg-gray-100" : "bg-gray-900 text-white"}`}>
+            {/* Sidebar */}
+            <aside className={`w-1/4 min-h-screen p-6 flex flex-col items-center shadow-lg ${theme === "light" ? "bg-white text-gray-800" : "bg-gray-800 text-white"}`}>
+                <img
+                    src={profileData?.profilepic || "/default-avatar.png"}
+                    className="w-24 h-24 rounded-full shadow-lg border-2 border-gray-300"
+                    alt="Profile"
+                />
+                
+                <h2 className="mt-4 text-lg font-semibold">{profileData?.name || "Your Name"}</h2>
+                <h2 className="mt-2 text-md">{profileData?.email || "Your Email"}</h2>
+                <h2 className="mt-2 text-md">{profileData?.phoneNumber || "Your Phone Number"}</h2>
 
-  return (
-    <div className={`min-h-screen flex justify-center items-center transition-all duration-300 ${theme === 'dark' ? 'bg-gray-900 text-gray-200' : 'bg-gray-100 text-gray-900'}`}>
-      <div className="max-w-lg w-full mx-4 p-8 rounded-xl shadow-lg">
-        <h2 className="text-3xl font-semibold mb-6 text-center">Manager Profile</h2>
-        <div className="space-y-6">
-          <div className="flex flex-col border-b pb-3">
-            <p className="text-lg font-medium text-gray-500">Name</p>
-            <p className="text-xl font-semibold">{manager.name}</p>
-          </div>
-          <div className="flex flex-col border-b pb-3">
-            <p className="text-lg font-medium text-gray-500">Email</p>
-            <p className="text-xl font-semibold">{manager.email}</p>
-          </div>
-          <div className="flex flex-col border-b pb-3">
-            <p className="text-lg font-medium text-gray-500">Phone</p>
-            <p className="text-xl font-semibold">{manager.phoneNumber}</p>
-          </div>
-        </div>
-      </div>
+                <nav className="mt-6 w-full">
+                    <button onClick={() => navigate("/manager/profile-update")} className="w-full flex items-center px-4 py-2 bg-green-500 text-white rounded-md">
+                        ✏️ Edit Profile
+                    </button>
+                    
+                </nav>
+            </aside>
+
+            {/* Main Content */}
+            <main className="w-3/4 p-6">
+    <div className={`p-6 rounded-lg shadow-md ${theme === "light" ? "bg-white text-black" : "bg-gray-800 text-white"}`}>
+        <h2 className="text-xl font-bold">Manager Dashboard</h2>
+        <p className="mt-2">Welcome, {profileData?.name || "Manager"}! Here you can manage your account settings.</p>
     </div>
-  );
+</main>
+
+        </div>
+    );
 };
