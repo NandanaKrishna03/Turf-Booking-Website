@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../config/axiosInstance";
 import { useSelector } from "react-redux";
+import { ThemeContext } from "../../context/ThemeContext"; // Import ThemeContext
 
 export const AddTurf = () => {
     const navigate = useNavigate();
+    const { theme } = useContext(ThemeContext); // Get theme from context
+    const isDarkMode = theme === "dark"; // Determine if dark mode is active
+
     const [formData, setFormData] = useState({
         title: "",
         category: "",
@@ -16,7 +20,7 @@ export const AddTurf = () => {
         image: null,
     });
 
-    const { manager } = useSelector((state) => state.manager); // Get manager info
+    const { manager } = useSelector((state) => state.manager);
 
     const handleChange = (e) => {
         if (e.target.name === "image") {
@@ -46,7 +50,7 @@ export const AddTurf = () => {
                 },
             });
             alert("Turf added successfully!");
-            navigate("/manager/turfs"); // Redirect to manager's turfs
+            navigate("/manager/turfs");
         } catch (error) {
             console.error("Error adding turf:", error);
             alert("Failed to add turf");
@@ -54,11 +58,20 @@ export const AddTurf = () => {
     };
 
     return (
-        <div className="p-8 bg-gradient-to-r from-green-500 via-blue-500 to-purple-600 min-h-screen flex flex-col items-center text-white">
+        <div
+            className={`p-8 min-h-screen flex flex-col items-center transition-all duration-300 ${
+                isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
+            }`}
+        >
             <h2 className="text-3xl font-extrabold mb-6 text-center">Add New Turf</h2>
-            <form onSubmit={handleSubmit} className="w-full max-w-lg space-y-6 bg-gray-800 p-8 rounded-lg shadow-lg">
+            <form 
+                onSubmit={handleSubmit} 
+                className={`w-full max-w-lg space-y-6 p-8 rounded-lg shadow-lg transition-all ${
+                    isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+                }`}
+            >
                 <div className="flex flex-col">
-                    <label htmlFor="title" className="text-lg font-medium text-left">Title</label>
+                    <label htmlFor="title" className="text-lg font-medium">Title</label>
                     <input
                         type="text"
                         name="title"
@@ -70,7 +83,7 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <label htmlFor="category" className="text-lg font-medium text-left">Category</label>
+                    <label htmlFor="category" className="text-lg font-medium">Category</label>
                     <input
                         type="text"
                         name="category"
@@ -82,7 +95,7 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <label htmlFor="description" className="text-lg font-medium text-left">Description</label>
+                    <label htmlFor="description" className="text-lg font-medium">Description</label>
                     <textarea
                         name="description"
                         placeholder="Enter Turf Description"
@@ -93,7 +106,7 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <label htmlFor="address" className="text-lg font-medium text-left">Address</label>
+                    <label htmlFor="address" className="text-lg font-medium">Address</label>
                     <input
                         type="text"
                         name="address"
@@ -105,7 +118,7 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <label htmlFor="price" className="text-lg font-medium text-left">Price</label>
+                    <label htmlFor="price" className="text-lg font-medium">Price</label>
                     <input
                         type="number"
                         name="price"
@@ -117,7 +130,7 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <label htmlFor="availableDates" className="text-lg font-medium text-left">Available Dates</label>
+                    <label htmlFor="availableDates" className="text-lg font-medium">Available Dates</label>
                     <input
                         type="text"
                         name="availableDates"
@@ -129,7 +142,7 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <label htmlFor="availableTimeSlots" className="text-lg font-medium text-left">Available Time Slots</label>
+                    <label htmlFor="availableTimeSlots" className="text-lg font-medium">Available Time Slots</label>
                     <input
                         type="text"
                         name="availableTimeSlots"
@@ -141,7 +154,7 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex flex-col">
-                    <label htmlFor="image" className="text-lg font-medium text-left">Upload Image</label>
+                    <label htmlFor="image" className="text-lg font-medium">Upload Image</label>
                     <input
                         type="file"
                         name="image"
@@ -152,7 +165,14 @@ export const AddTurf = () => {
                 </div>
 
                 <div className="flex justify-center mt-6">
-                    <button type="submit" className="btn-primary py-2 px-6 rounded-lg bg-green-600 text-white hover:bg-green-700 transition duration-300">
+                    <button
+                        type="submit"
+                        className={`py-2 px-6 rounded-lg transition-all font-semibold ${
+                            isDarkMode
+                                ? "bg-green-700 text-white hover:bg-green-800"
+                                : "bg-green-600 text-white hover:bg-green-700"
+                        }`}
+                    >
                         Add Turf
                     </button>
                 </div>
