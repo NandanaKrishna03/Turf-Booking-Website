@@ -34,7 +34,7 @@ export const ManagerBooking = ({ refetch }) => {
   };
 
   return (
-    <div className={`min-h-screen p-6 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
+    <div className={`mt-20 min-h-screen p-6 ${isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 text-center">User Bookings</h2>
         {bookings.length > 0 ? (
