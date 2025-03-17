@@ -41,7 +41,7 @@ export const ChangePassword = () => {
 
     return (
         <div
-            className={`flex justify-center items-center min-h-screen transition-all duration-300 ${
+            className={`mt-20 flex justify-center items-center min-h-screen transition-all duration-300 ${
                 isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
             }`}
         >
