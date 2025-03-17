@@ -35,13 +35,15 @@ export const Header = () => {
             </video>
 
            {/* Header */}
-<div
+           <div
     className={`fixed top-0 left-0 w-full flex justify-between items-center px-6 sm:px-14 h-20 shadow-2xl z-50 transition-colors duration-500 ${
         scrollY > 50
             ? theme === "dark"
                 ? "bg-gray-900 text-white"
                 : "bg-white text-black"
-            : "bg-transparent text-white"
+            : theme === "dark"
+                ? "bg-transparent text-white"
+                : "bg-transparent text-black"
     }`}
 >
     <Link to={"/"}>
