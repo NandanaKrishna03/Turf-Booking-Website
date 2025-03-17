@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import { MyBookings } from "./MyBooking";
+import Avatar from "react-avatar";
 
 export const Profile = () => {
     const [profileData] = useFetch("/user/profile");
@@ -17,11 +18,22 @@ export const Profile = () => {
             {/* Sidebar */}
             <aside className={`w-1/4 min-h-screen p-6 flex flex-col items-center shadow-lg ${theme === "light" ? "bg-white text-gray-800" : "bg-gray-800 text-white"}`}>
                 {/* Profile Picture & Info */}
-                <img
-                    src={profileData?.profilepic || "/default-avatar.png"}
-                    className="w-24 h-24 rounded-full shadow-lg border-2 border-gray-300"
-                    alt="Profile"
-                />
+                {profileData?.profilepic ? (
+    <img
+        src={profileData.profilepic}
+        className="w-24 h-24 rounded-full shadow-lg border-2 border-gray-300"
+        alt="Profile"
+    />
+) : (
+    <Avatar
+        name={profileData?.name || "User"} 
+        size="96" 
+        round={true} 
+        textSizeRatio={2} 
+        maxInitials={1} 
+        className="shadow-lg "
+    />
+)}
                 
                 <h2 className="mt-4 text-lg font-semibold">{profileData?.name || "Your Name"}</h2>
                 <h2 className="mt-4 text-lg font-semibold">{profileData?.phoneNumber || "Your Phone"}</h2>
