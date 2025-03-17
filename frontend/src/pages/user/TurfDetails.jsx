@@ -42,7 +42,7 @@ function TurfDetails() {
 
   return (
     <div
-      className={`container mx-auto px-6 py-12 transition-all duration-300 ${
+      className={`container mt-20 mx-auto px-6 py-12 transition-all duration-300 ${
         isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
