@@ -35,6 +35,23 @@ export const EditProfile = () => {
     }
   };
 
+  const handleRemoveProfilePic = async () => {
+    try {
+      await axiosInstance.delete("/user/remove-profile-picture");
+
+      // Update Redux and local state
+      dispatch(saveUser({ ...user, profilepic: "" }));
+      setPreview("");
+      setFile(null);
+
+      toast.success("Profile picture removed");
+    } catch (error) {
+      console.log(error);
+      
+      toast.error("Failed to remove profile picture");
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -73,18 +90,33 @@ export const EditProfile = () => {
         <h2 className="text-2xl font-semibold text-center mb-6">Edit Profile</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col items-center mb-4">
-            <img
-              src={preview}
-              alt="Profile"
-              className="w-24 h-24 rounded-full object-cover mb-2 border"
-            />
-            <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="file-upload" />
-            <label
-              htmlFor="file-upload"
-              className="cursor-pointer font-medium transition-all text-blue-500 hover:text-blue-600"
-            >
-              Change Profile Picture
-            </label>
+            {preview ? (
+              <img src={preview} alt="Profile" className="w-24 h-24 rounded-full object-cover mb-2 border" />
+            ) : (
+              <div className="w-24 h-24 flex items-center justify-center bg-gray-300 rounded-full text-gray-700 text-lg font-bold">
+                No Image
+              </div>
+            )}
+
+            <div className="flex gap-2 mt-2">
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" id="file-upload" />
+              <label
+                htmlFor="file-upload"
+                className="cursor-pointer font-medium transition-all text-blue-500 hover:text-blue-600"
+              >
+                Change Profile Picture
+              </label>
+
+              {preview && (
+                <button
+                  type="button"
+                  onClick={handleRemoveProfilePic}
+                  className="text-red-500 font-medium hover:text-red-600 transition-all"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="mb-4">
