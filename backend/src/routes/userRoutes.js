@@ -9,7 +9,8 @@ import {
     userLogout,
     userProfile,
     userSignup,
-    getBookings // Import the getBookings function
+    getBookings, // Import the getBookings function
+    removeProfilePicture
 } from "../controllers/userController.js";
 import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
@@ -45,6 +46,8 @@ router.get('/check-user', userAuth, checkUser);
 
 // Get Bookings Route (added)
 router.get('/get-bookings', userAuth, getBookings); // Protect with userAuth middleware
+
+router.delete('/remove-profile-picture', userAuth, removeProfilePicture);
 
 export { router as userRouter };
 
