@@ -7,7 +7,7 @@ import { axiosInstance } from "../../config/axiosInstance";
 import { clearUser } from "../../redux/features/userSlice";
 import { ThemeContext } from "../../context/ThemeContext";
 import { useFetch } from "../../hooks/useFetch"; // Import useFetch
-
+import Avatar from "react-avatar";
 export const UserHeader = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -42,13 +42,26 @@ export const UserHeader = () => {
                     <Link to="/turfs" className="hover:text-blue-500 transition">Turfs</Link>
 
                     {/* Profile Picture */}
-                    <Link to="/user/profile">
-                        <img
-                            src={profileData?.profilepic || "/default-avatar.png"}
-                            className="w-10 h-10 rounded-full shadow-md border-2 border-gray-300 object-cover"
-                            alt="Profile"
-                        />
-                    </Link>
+                   
+
+<Link to="/user/profile">
+    {profileData?.profilepic ? (
+        <img
+            src={profileData.profilepic}
+            className="w-10 h-10 rounded-full shadow-md border-2 border-gray-300 object-cover"
+            alt="Profile"
+        />
+    ) : (
+        <Avatar 
+            name={profileData?.name || "User"} 
+            size="40" 
+            round={true} 
+            className="shadow-md "
+            maxInitials={1} 
+        />
+    )}
+</Link>
+
 
                     <Darkmode />
                     <button className="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-red-400 transition" onClick={handleLogOut}>
